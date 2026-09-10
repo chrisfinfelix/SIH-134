@@ -1,0 +1,32 @@
+[
+  {
+    "course_id": "COURSE001",
+    "recommendation_text": "Add AWS fundamentals and Docker containerisation modules. MongoDB integration labs should be included to align with full-stack job requirements.",
+    "flag_type": "curriculum_update",
+    "suggested_skills_to_add": ["AWS", "Docker", "MongoDB"]
+  },
+  {
+    "course_id": "COURSE003",
+    "recommendation_text": "This course is severely outdated. Recommend adding JavaScript, React and Node.js to prevent further student placement failures in the web development sector.",
+    "flag_type": "curriculum_update",
+    "suggested_skills_to_add": ["JavaScript", "React", "Node.js", "AWS"]
+  },
+  {
+    "course_id": "COURSE005",
+    "recommendation_text": "Add cloud deployment modules covering AWS and Docker. Employers in Hyderabad and Bengaluru consistently require these alongside Java skills.",
+    "flag_type": "curriculum_update",
+    "suggested_skills_to_add": ["AWS", "Docker"]
+  },
+  {
+    "course_id": "COURSE006",
+    "recommendation_text": "Consider adding Machine Learning integration with Power BI to meet growing demand for AI-driven analytics dashboards.",
+    "flag_type": "enhancement",
+    "suggested_skills_to_add": ["Machine Learning"]
+  },
+  {
+    "course_id": "COURSE007",
+    "recommendation_text": "Curriculum is aligned. Consider adding Kubernetes as an optional advanced module to stay ahead of DevOps market trends.",
+    "flag_type": "enhancement",
+    "suggested_skills_to_add": ["Kubernetes"]
+  }
+]

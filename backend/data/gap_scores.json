@@ -1,0 +1,42 @@
+[
+  {
+    "course_id": "COURSE001",
+    "gap_score": 42,
+    "matched_skills": ["JavaScript", "React", "HTML", "CSS"],
+    "missing_skills": ["AWS", "Docker", "MongoDB"],
+    "demand_count": 850,
+    "flag": "Needs Update"
+  },
+  {
+    "course_id": "COURSE002",
+    "gap_score": 18,
+    "matched_skills": ["Python", "SQL", "Machine Learning"],
+    "missing_skills": ["Power BI"],
+    "demand_count": 620,
+    "flag": "Good"
+  },
+  {
+    "course_id": "COURSE003",
+    "gap_score": 78,
+    "matched_skills": ["HTML", "CSS"],
+    "missing_skills": ["JavaScript", "React", "Node.js", "AWS"],
+    "demand_count": 200,
+    "flag": "Critical"
+  },
+  {
+    "course_id": "COURSE004",
+    "gap_score": 12,
+    "matched_skills": ["AWS", "Docker", "Python"],
+    "missing_skills": [],
+    "demand_count": 740,
+    "flag": "Good"
+  },
+  {
+    "course_id": "COURSE005",
+    "gap_score": 55,
+    "matched_skills": ["Java", "SQL"],
+    "missing_skills": ["AWS", "Docker"],
+    "demand_count": 410,
+    "flag": "Needs Update"
+  }
+]

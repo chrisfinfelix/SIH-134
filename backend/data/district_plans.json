@@ -1,0 +1,32 @@
+[
+  {
+    "district": "Ernakulam",
+    "summary": "High demand for modern full-stack web development skills. The district hosts several IT parks and startups actively hiring React and Node.js developers. Cloud skills are increasingly required.",
+    "top_demand_skills": ["React", "Node.js", "AWS", "MongoDB", "Docker"],
+    "oversupplied_courses": ["Basic Web Design"]
+  },
+  {
+    "district": "Thiruvananthapuram",
+    "summary": "Growing fintech and e-governance sector driving demand for Python, SQL, and Java developers. Machine learning skills are emerging as a key requirement.",
+    "top_demand_skills": ["Python", "SQL", "Java", "Machine Learning", "Node.js"],
+    "oversupplied_courses": []
+  },
+  {
+    "district": "Kozhikode",
+    "summary": "Cloud computing and data analytics are the fastest-growing skill areas. Multiple companies are setting up analytics centres, driving demand for Power BI and AWS skills.",
+    "top_demand_skills": ["AWS", "Power BI", "Python", "SQL", "Docker"],
+    "oversupplied_courses": []
+  },
+  {
+    "district": "Bengaluru",
+    "summary": "India's tech capital continues to demand advanced skills. Machine learning, DevOps and full-stack skills are at peak demand. Highly competitive market.",
+    "top_demand_skills": ["Python", "Machine Learning", "Docker", "AWS", "React"],
+    "oversupplied_courses": []
+  },
+  {
+    "district": "Hyderabad",
+    "summary": "Strong demand for Java enterprise development and cloud architecture. The HITEC City cluster requires advanced cloud and DevOps skills.",
+    "top_demand_skills": ["Java", "AWS", "Docker", "SQL", "Python"],
+    "oversupplied_courses": []
+  }
+]

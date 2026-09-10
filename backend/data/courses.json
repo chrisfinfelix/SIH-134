@@ -1,0 +1,90 @@
+[
+  {
+    "course_id": "COURSE001",
+    "course_name": "Full Stack Web Development",
+    "nsqf_level": 5,
+    "sector": "IT",
+    "skills": ["HTML", "CSS", "JavaScript", "React", "Node.js"],
+    "proficiency_level": "Intermediate",
+    "district": "Ernakulam",
+    "duration_weeks": 24,
+    "provider": "Kerala IT Academy"
+  },
+  {
+    "course_id": "COURSE002",
+    "course_name": "Python for Data Science",
+    "nsqf_level": 4,
+    "sector": "Data Analytics",
+    "skills": ["Python", "SQL", "Machine Learning"],
+    "proficiency_level": "Intermediate",
+    "district": "Thiruvananthapuram",
+    "duration_weeks": 16,
+    "provider": "CDAC Trivandrum"
+  },
+  {
+    "course_id": "COURSE003",
+    "course_name": "Basic Web Design",
+    "nsqf_level": 3,
+    "sector": "IT",
+    "skills": ["HTML", "CSS"],
+    "proficiency_level": "Beginner",
+    "district": "Ernakulam",
+    "duration_weeks": 8,
+    "provider": "NIELIT"
+  },
+  {
+    "course_id": "COURSE004",
+    "course_name": "Cloud Computing with AWS",
+    "nsqf_level": 6,
+    "sector": "Cloud",
+    "skills": ["AWS", "Docker", "Python"],
+    "proficiency_level": "Advanced",
+    "district": "Kozhikode",
+    "duration_weeks": 20,
+    "provider": "Amazon Training Partner"
+  },
+  {
+    "course_id": "COURSE005",
+    "course_name": "Java Enterprise Development",
+    "nsqf_level": 5,
+    "sector": "IT",
+    "skills": ["Java", "SQL"],
+    "proficiency_level": "Intermediate",
+    "district": "Thiruvananthapuram",
+    "duration_weeks": 20,
+    "provider": "NASSCOM Academy"
+  },
+  {
+    "course_id": "COURSE006",
+    "course_name": "Data Analytics with Power BI",
+    "nsqf_level": 4,
+    "sector": "Data Analytics",
+    "skills": ["Power BI", "SQL", "Python"],
+    "proficiency_level": "Intermediate",
+    "district": "Kozhikode",
+    "duration_weeks": 12,
+    "provider": "Microsoft Learning Partner"
+  },
+  {
+    "course_id": "COURSE007",
+    "course_name": "DevOps and Containerisation",
+    "nsqf_level": 6,
+    "sector": "DevOps",
+    "skills": ["Docker", "AWS", "Python"],
+    "proficiency_level": "Advanced",
+    "district": "Ernakulam",
+    "duration_weeks": 18,
+    "provider": "Kerala IT Academy"
+  },
+  {
+    "course_id": "COURSE008",
+    "course_name": "Machine Learning Fundamentals",
+    "nsqf_level": 5,
+    "sector": "AI/ML",
+    "skills": ["Python", "Machine Learning", "SQL"],
+    "proficiency_level": "Intermediate",
+    "district": "Thiruvananthapuram",
+    "duration_weeks": 22,
+    "provider": "IIT Trivandrum Extension"
+  }
+]

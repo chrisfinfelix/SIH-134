@@ -1,0 +1,17 @@
+[
+  { "skill_id": "SK001", "skill_name": "React", "category": "Web Development" },
+  { "skill_id": "SK002", "skill_name": "JavaScript", "category": "Web Development" },
+  { "skill_id": "SK003", "skill_name": "Node.js", "category": "Backend Development" },
+  { "skill_id": "SK004", "skill_name": "Express", "category": "Backend Development" },
+  { "skill_id": "SK005", "skill_name": "MongoDB", "category": "Database" },
+  { "skill_id": "SK006", "skill_name": "Python", "category": "Programming" },
+  { "skill_id": "SK007", "skill_name": "SQL", "category": "Database" },
+  { "skill_id": "SK008", "skill_name": "AWS", "category": "Cloud" },
+  { "skill_id": "SK009", "skill_name": "Docker", "category": "DevOps" },
+  { "skill_id": "SK010", "skill_name": "Java", "category": "Programming" },
+  { "skill_id": "SK011", "skill_name": "HTML", "category": "Web Development" },
+  { "skill_id": "SK012", "skill_name": "CSS", "category": "Web Development" },
+  { "skill_id": "SK013", "skill_name": "Power BI", "category": "Data Analytics" },
+  { "skill_id": "SK014", "skill_name": "Machine Learning", "category": "AI/ML" },
+  { "skill_id": "SK015", "skill_name": "C++", "category": "Programming" }
+]

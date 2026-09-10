@@ -2,6 +2,7 @@ const express = require("express");
 const {
   getStats,
   getSkillDemand,
+  getStatesSummary,
   getDistrictSummary,
   getRecommendations,
 } = require("../controllers/adminController");
@@ -14,6 +15,7 @@ router.use(authenticate, requireRole("admin"));
 
 router.get("/stats", getStats);
 router.get("/skill-demand", getSkillDemand);
+router.get("/states-summary", getStatesSummary);
 router.get("/district-summary", getDistrictSummary);
 router.get("/recommendations", getRecommendations);
 

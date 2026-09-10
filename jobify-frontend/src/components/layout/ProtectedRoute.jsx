@@ -20,7 +20,14 @@ const ProtectedRoute = ({ role, children }) => {
     const allowedRoles = Array.isArray(role) ? role : [role];
     if (!allowedRoles.includes(user.role) && user.role !== "admin") {
       // Redirect to their respective dashboard
-      const target = user.role === "employer" ? "/employer" : "/trainee";
+      const target =
+        user.role === "employer"
+          ? "/employer"
+          : user.role === "institute"
+          ? "/institute"
+          : user.role === "admin"
+          ? "/admin"
+          : "/trainee";
       return <Navigate to={target} replace />;
     }
   }

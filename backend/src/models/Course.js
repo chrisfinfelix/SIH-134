@@ -37,6 +37,16 @@ const courseSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    state: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    deliveryMode: {
+      type: String,
+      enum: ["Online", "Offline", "Hybrid"],
+      default: "Offline",
+    },
     durationWeeks: {
       type: Number,
       default: null,
@@ -46,11 +56,18 @@ const courseSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    instituteId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Institute",
+      default: null,
+    },
   },
   { timestamps: true }
 );
 
 courseSchema.index({ district: 1 });
+courseSchema.index({ state: 1 });
+courseSchema.index({ deliveryMode: 1 });
 courseSchema.index({ sector: 1 });
 courseSchema.index({ skills: 1 });
 

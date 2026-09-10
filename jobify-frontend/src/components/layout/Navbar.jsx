@@ -31,6 +31,7 @@ const Navbar = ({ onOpenSidebar, isDashboard = false }) => {
 
   const getDashboardPath = (role) => {
     if (role === "employer") return "/employer";
+    if (role === "institute") return "/institute";
     if (role === "admin") return "/admin";
     return "/trainee";
   };

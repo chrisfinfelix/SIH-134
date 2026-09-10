@@ -47,7 +47,17 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const SkillDemandBar = ({ data = [], title = "Top Demanded Skills in Job Market" }) => {
+const SkillDemandBar = ({
+  data = [],
+  title,
+  stateName = "All",
+}) => {
+  const displayTitle =
+    title ||
+    (stateName && stateName !== "All"
+      ? `Top Demanded Skills in ${stateName}`
+      : "Top Demanded Skills in National Job Market");
+
   // Format and take top 15-20 skills
   const chartData = (data || [])
     .slice(0, 15)
@@ -70,10 +80,12 @@ const SkillDemandBar = ({ data = [], title = "Top Demanded Skills in Job Market"
       <Flex justify="space-between" align="center" mb={4}>
         <Box>
           <Heading as="h3" size="sm" fontWeight="700" color="text.primary">
-            {title}
+            {displayTitle}
           </Heading>
           <Text fontSize="xs" color="text.muted" mt={0.5}>
-            Aggregated across national active job vacancies
+            {stateName && stateName !== "All"
+              ? `Aggregated across active job vacancies in ${stateName}`
+              : "Aggregated across national active job vacancies"}
           </Text>
         </Box>
       </Flex>

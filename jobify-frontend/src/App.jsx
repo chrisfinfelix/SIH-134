@@ -18,6 +18,9 @@ import EmployerDashboard from "./pages/employer/EmployerDashboard";
 import ValidateCourses from "./pages/employer/ValidateCourses";
 import DemandSignals from "./pages/employer/DemandSignals";
 
+// Institute Pages
+import InstituteDashboard from "./pages/institute/InstituteDashboard";
+
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Recommendations from "./pages/admin/Recommendations";
@@ -73,6 +76,16 @@ function App() {
         element={
           <ProtectedRoute role={["employer", "admin"]}>
             <DemandSignals />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Institute Routes */}
+      <Route
+        path="/institute"
+        element={
+          <ProtectedRoute role={["institute", "admin"]}>
+            <InstituteDashboard />
           </ProtectedRoute>
         }
       />

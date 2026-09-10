@@ -23,6 +23,11 @@ const employerDemandSignalSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    state: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     skills: {
       type: [String],
       default: [],

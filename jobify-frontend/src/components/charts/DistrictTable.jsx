@@ -14,7 +14,17 @@ import {
   Flex,
 } from "@chakra-ui/react";
 
-const DistrictTable = ({ data = [], title = "District Employment & Training Balance" }) => {
+const DistrictTable = ({
+  data = [],
+  title,
+  stateName = "All",
+}) => {
+  const displayTitle =
+    title ||
+    (stateName && stateName !== "All"
+      ? `${stateName} District Employment & Training Balance`
+      : "District Employment & Training Balance");
+
   return (
     <Box
       bg="white"
@@ -27,10 +37,12 @@ const DistrictTable = ({ data = [], title = "District Employment & Training Bala
       <Flex justify="space-between" align="center" mb={4}>
         <Box>
           <Heading as="h3" size="sm" fontWeight="700" color="text.primary">
-            {title}
+            {displayTitle}
           </Heading>
           <Text fontSize="xs" color="text.muted" mt={0.5}>
-            Job demand vs training capacity by regional district
+            {stateName && stateName !== "All"
+              ? `Job demand vs training capacity across districts in ${stateName}`
+              : "Job demand vs training capacity by regional district"}
           </Text>
         </Box>
       </Flex>

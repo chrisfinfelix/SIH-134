@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "employer", "trainee"],
+      enum: ["admin", "employer", "trainee", "institute"],
       default: "trainee",
     },
     organization: {
@@ -31,6 +31,30 @@ const userSchema = new mongoose.Schema(
     skills: {
       type: [String],
       default: [],
+    },
+    targetRole: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    primaryState: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    preferredStates: {
+      type: [String],
+      default: [],
+    },
+    preferredDeliveryMode: {
+      type: String,
+      enum: ["All", "Online", "Offline", "Hybrid"],
+      default: "All",
+    },
+    instituteId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Institute",
+      default: null,
     },
   },
   { timestamps: true }

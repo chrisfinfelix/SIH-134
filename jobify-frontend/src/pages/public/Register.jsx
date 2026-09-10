@@ -46,8 +46,10 @@ const Register = () => {
     } else if (password.length < 6) {
       errs.password = "Password must be at least 6 characters long";
     }
-    if (role === "employer" && !organization.trim()) {
-      errs.organization = "Company / Enterprise name is required for employer accounts";
+    if ((role === "employer" || role === "institute") && !organization.trim()) {
+      errs.organization = role === "employer"
+        ? "Company / Enterprise name is required for employer accounts"
+        : "Institute / College / Skill Center name is required";
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -64,7 +66,7 @@ const Register = () => {
         email,
         password,
         role,
-        organization: role === "employer" ? organization : "",
+        organization: role !== "trainee" ? organization : "",
       });
 
       toast({
@@ -80,6 +82,8 @@ const Register = () => {
       const destination =
         newUser.role === "employer"
           ? "/employer"
+          : newUser.role === "institute"
+          ? "/institute"
           : newUser.role === "admin"
           ? "/admin"
           : "/trainee";
@@ -205,17 +209,18 @@ const Register = () => {
                 >
                   <option value="trainee">Trainee / Jobseeker / Student</option>
                   <option value="employer">Employer / Industry Partner</option>
+                  <option value="institute">Training Institute / ITI / Skill Center</option>
                 </Select>
               </FormControl>
 
-              {role === "employer" && (
+              {(role === "employer" || role === "institute") && (
                 <FormControl isInvalid={!!errors.organization}>
                   <FormLabel fontSize="xs" fontWeight="600" color="text.secondary">
-                    Company / Enterprise Name
+                    {role === "employer" ? "Company / Enterprise Name" : "Institute / Academy / College Name"}
                   </FormLabel>
                   <Input
                     type="text"
-                    placeholder="e.g. Bharat Electronics Ltd."
+                    placeholder={role === "employer" ? "e.g. Bharat Electronics Ltd." : "e.g. Kerala Skill Development Academy"}
                     value={organization}
                     onChange={(e) => {
                       setOrganization(e.target.value);

@@ -41,6 +41,12 @@ const Sidebar = ({ role = "trainee", onClose }) => {
     { name: "Demand Signals", path: "/employer/demand-signals", icon: AddIcon },
   ];
 
+  const instituteLinks = [
+    { name: "Institute Overview", path: "/institute", icon: ViewIcon, exact: true },
+    { name: "Regional Skill Alignment", path: "/institute#alignment", icon: CheckCircleIcon },
+    { name: "Curriculum & Courses", path: "/trainee/courses", icon: TimeIcon },
+  ];
+
   const adminLinks = [
     { name: "Executive Dashboard", path: "/admin", icon: ViewIcon, exact: true },
     { name: "Curriculum Recommendations", path: "/admin/recommendations", icon: EditIcon },
@@ -52,6 +58,9 @@ const Sidebar = ({ role = "trainee", onClose }) => {
   if (role === "employer") {
     links = employerLinks;
     roleTitle = "Employer Portal";
+  } else if (role === "institute") {
+    links = instituteLinks;
+    roleTitle = "Institute Portal";
   } else if (role === "admin") {
     links = adminLinks;
     roleTitle = "Admin Intelligence";

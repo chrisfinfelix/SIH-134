@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Heading,
@@ -6,9 +6,21 @@ import {
   SimpleGrid,
   Flex,
   HStack,
+  VStack,
   Badge,
   Button,
   Icon,
+  Select,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Card,
+  CardBody,
+  CardHeader,
+  Divider,
 } from "@chakra-ui/react";
 import {
   SearchIcon,
@@ -18,6 +30,7 @@ import {
   TimeIcon,
   RepeatIcon,
   ArrowForwardIcon,
+  ViewIcon,
 } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -28,42 +41,74 @@ import DistrictTable from "../../components/charts/DistrictTable";
 import LoadingSpinner from "../../components/shared/LoadingSpinner";
 import api from "../../api/axios";
 
+const KNOWN_STATES = [
+  "All",
+  "Kerala",
+  "Karnataka",
+  "Tamil Nadu",
+  "Maharashtra",
+  "Delhi",
+  "Telangana",
+  "Gujarat",
+];
+
 const AdminDashboard = () => {
-  // 1. Fetch Admin General Stats
+  const [selectedState, setSelectedState] = useState("All");
+  const [selectedDistrict, setSelectedDistrict] = useState("All");
+
+  // 1. Fetch Admin Stats (Supports state & district query params)
   const { data: statsData, isLoading: isStatsLoading } = useQuery({
-    queryKey: ["admin", "stats"],
+    queryKey: ["admin", "stats", selectedState, selectedDistrict],
     queryFn: async () => {
-      const res = await api.get("/admin/stats");
+      const params = new URLSearchParams();
+      if (selectedState !== "All") params.append("state", selectedState);
+      if (selectedDistrict !== "All") params.append("district", selectedDistrict);
+      const res = await api.get(`/admin/stats?${params.toString()}`);
       return res.data?.data || {};
     },
   });
 
-  // 2. Fetch Skill Demand
+  // 2. Fetch Skill Demand (Reactive to state & district)
   const { data: skillDemandData, isLoading: isSkillLoading } = useQuery({
-    queryKey: ["admin", "skill-demand"],
+    queryKey: ["admin", "skill-demand", selectedState, selectedDistrict],
     queryFn: async () => {
-      const res = await api.get("/admin/skill-demand");
+      const params = new URLSearchParams();
+      if (selectedState !== "All") params.append("state", selectedState);
+      if (selectedDistrict !== "All") params.append("district", selectedDistrict);
+      const res = await api.get(`/admin/skill-demand?${params.toString()}`);
       return res.data?.data?.skills || [];
     },
   });
 
-  // 3. Fetch District Summary
-  const { data: districtSummaryData, isLoading: isDistrictLoading } = useQuery({
-    queryKey: ["admin", "district-summary"],
+  // 3. Fetch States Overview Summary
+  const { data: statesSummaryData, isLoading: isStatesLoading } = useQuery({
+    queryKey: ["admin", "states-summary"],
     queryFn: async () => {
-      const res = await api.get("/admin/district-summary");
+      const res = await api.get("/admin/states-summary");
+      return res.data?.data || [];
+    },
+  });
+
+  // 4. Fetch District Summary (Reactive to state)
+  const { data: districtSummaryData, isLoading: isDistrictLoading } = useQuery({
+    queryKey: ["admin", "district-summary", selectedState],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (selectedState !== "All") params.append("state", selectedState);
+      const res = await api.get(`/admin/district-summary?${params.toString()}`);
       return res.data?.data || [];
     },
   });
 
   const stats = statsData || {};
   const highGapCount = stats.highGapCourses || 0;
+  const statesSummary = statesSummaryData || [];
 
   return (
     <PageShell
       role="admin"
-      title="National Labour Market Intelligence"
-      subtitle="Executive analytics on national vocational alignment, industry demand signals, and regional workforce balance"
+      title="National Labour Market & State Intelligence Hub"
+      subtitle="Central government overview of national vocational alignment, state capacity, and district workforce dynamics"
       breadcrumbItems={[{ label: "Executive Dashboard" }]}
       action={
         <HStack spacing={2}>
@@ -89,6 +134,74 @@ const AdminDashboard = () => {
         </HStack>
       }
     >
+      {/* ── State & District Geographic Filter Bar ──────────────────── */}
+      <Box
+        bg="white"
+        p={4}
+        borderRadius="md"
+        borderWidth="1px"
+        borderColor="#E2E8F0"
+        boxShadow="sm"
+        mb={6}
+      >
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          align={{ base: "flex-start", md: "center" }}
+          justify="space-between"
+          gap={4}
+        >
+          <Box>
+            <HStack spacing={2}>
+              <Badge colorScheme="orange" fontSize="2xs" px={2} py={0.5} borderRadius="sm">
+                GEOGRAPHIC DRILL-DOWN
+              </Badge>
+              {selectedState !== "All" && (
+                <Badge colorScheme="blue" fontSize="2xs" px={2} py={0.5} borderRadius="sm">
+                  Active Filter: {selectedState}
+                </Badge>
+              )}
+            </HStack>
+            <Text fontSize="xs" color="text.muted" mt={1}>
+              Switch between National Overview and State/District specific intelligence
+            </Text>
+          </Box>
+
+          <HStack spacing={3} w={{ base: "full", md: "auto" }}>
+            <Box minW="180px">
+              <Select
+                size="sm"
+                value={selectedState}
+                onChange={(e) => {
+                  setSelectedState(e.target.value);
+                  setSelectedDistrict("All");
+                }}
+                bg="gray.50"
+              >
+                {KNOWN_STATES.map((st) => (
+                  <option key={st} value={st}>
+                    {st === "All" ? "🇮🇳 National Overview (All States)" : `📍 State: ${st}`}
+                  </option>
+                ))}
+              </Select>
+            </Box>
+
+            {selectedState !== "All" && (
+              <Button
+                size="sm"
+                variant="ghost"
+                colorScheme="red"
+                onClick={() => {
+                  setSelectedState("All");
+                  setSelectedDistrict("All");
+                }}
+              >
+                Reset to National
+              </Button>
+            )}
+          </HStack>
+        </Flex>
+      </Box>
+
       {/* High Gap Alert Banner if applicable */}
       {highGapCount > 0 && (
         <Box
@@ -124,23 +237,23 @@ const AdminDashboard = () => {
         </Box>
       )}
 
-      {/* 6 Key Stat Cards Grid */}
+      {/* 6 Key Stat Cards Grid (Reactive to selected state) */}
       <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 6 }} spacing={3} mb={8}>
         <StatCard
-          label="Total Jobs"
+          label={selectedState === "All" ? "Total Jobs" : `${selectedState} Jobs`}
           value={stats.totalJobs || 0}
           icon={SearchIcon}
           color="brand.500"
         />
         <StatCard
-          label="Total Courses"
+          label={selectedState === "All" ? "Total Courses" : `${selectedState} Courses`}
           value={stats.totalCourses || 0}
           icon={StarIcon}
           color="brand.500"
         />
         <StatCard
-          label="Indexed Skills"
-          value={stats.totalSkills || 0}
+          label="Training Institutes"
+          value={stats.totalInstitutes || 0}
           icon={CheckCircleIcon}
           color="brand.500"
         />
@@ -164,14 +277,94 @@ const AdminDashboard = () => {
         />
       </SimpleGrid>
 
-      {/* Analytics Charts & Tables Grid */}
+      {/* ── State-by-State Monitoring Table (National View) ────────── */}
+      <Card borderWidth="1px" borderColor="#E2E8F0" shadow="sm" mb={8}>
+        <CardHeader pb={2}>
+          <Flex justify="space-between" align="center">
+            <Box>
+              <Heading size="sm" color="text.primary">
+                State-Level Monitoring & Capacity Directory
+              </Heading>
+              <Text fontSize="xs" color="text.muted">
+                Compare job demand, courses offered, and accredited training institutes across Indian states
+              </Text>
+            </Box>
+            <Badge colorScheme="orange" fontSize="xs" px={2} py={0.5} borderRadius="full">
+              {statesSummary.length} States Tracked
+            </Badge>
+          </Flex>
+        </CardHeader>
+        <CardBody pt={2}>
+          <Table variant="simple" size="sm">
+            <Thead>
+              <Tr>
+                <Th>State / Territory</Th>
+                <Th>Market Job Demand</Th>
+                <Th>Courses Available</Th>
+                <Th>Registered Institutes</Th>
+                <Th>Quick Action</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {statesSummary.map((st) => {
+                const isSelected = selectedState === st.state;
+                return (
+                  <Tr
+                    key={st.state}
+                    bg={isSelected ? "orange.50" : "transparent"}
+                    _hover={{ bg: isSelected ? "orange.50" : "gray.50" }}
+                  >
+                    <Td fontWeight="600" color={isSelected ? "brand.500" : "text.primary"}>
+                      <HStack spacing={2}>
+                        <Text>{st.state}</Text>
+                        {isSelected && (
+                          <Badge colorScheme="orange" fontSize="2xs">
+                            Active
+                          </Badge>
+                        )}
+                      </HStack>
+                    </Td>
+                    <Td>
+                      <Badge colorScheme="blue" variant="solid" fontSize="xs">
+                        {st.jobCount} Jobs
+                      </Badge>
+                    </Td>
+                    <Td>
+                      <Badge colorScheme="green" variant="subtle" fontSize="xs">
+                        {st.courseCount} Courses
+                      </Badge>
+                    </Td>
+                    <Td>
+                      <Badge colorScheme="purple" variant="outline" fontSize="xs">
+                        {st.instituteCount} Institutes
+                      </Badge>
+                    </Td>
+                    <Td>
+                      <Button
+                        size="xs"
+                        variant={isSelected ? "solid" : "outline"}
+                        colorScheme={isSelected ? "orange" : "gray"}
+                        onClick={() => setSelectedState(st.state)}
+                      >
+                        {isSelected ? "Viewing State" : "Filter State"}
+                      </Button>
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </CardBody>
+      </Card>
+
+      {/* Analytics Charts & Tables Grid (State / National Reactive) */}
       <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6} mb={8}>
         {/* Horizontal Skill Demand Bar Chart */}
         <Box>
           {isSkillLoading ? (
-            <LoadingSpinner message="Calculating national skill demand percentages..." />
+            <LoadingSpinner message="Calculating skill demand percentages..." />
           ) : (
-            <SkillDemandBar data={skillDemandData} />
+            <SkillDemandBar data={skillDemandData} stateName={selectedState} />
           )}
         </Box>
 
@@ -180,7 +373,7 @@ const AdminDashboard = () => {
           {isDistrictLoading ? (
             <LoadingSpinner message="Aggregating district workforce indices..." />
           ) : (
-            <DistrictTable data={districtSummaryData} />
+            <DistrictTable data={districtSummaryData} stateName={selectedState} />
           )}
         </Box>
       </SimpleGrid>

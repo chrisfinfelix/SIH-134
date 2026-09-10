@@ -17,6 +17,7 @@ import {
   InputGroup,
   InputRightElement,
   IconButton,
+  Divider
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon, LockIcon } from "@chakra-ui/icons";
 import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
@@ -192,7 +193,6 @@ const Login = () => {
             </VStack>
           </form>
 
-          {/* Quick Demo Credentials Info */}
           <Box mt={6} p={3} bg="#F8FAFC" borderRadius="md" border="1px solid #E2E8F0" fontSize="2xs" color="text.muted">
             <Text fontWeight="700" color="brand.500" mb={1}>
               TEST ACCOUNTS (IF PRE-SEEDED):

@@ -59,6 +59,7 @@ import {
   InfoIcon,
   BellIcon,
   DeleteIcon,
+  StarIcon,
 } from "@chakra-ui/icons";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";

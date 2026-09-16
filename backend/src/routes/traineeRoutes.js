@@ -5,20 +5,21 @@ const {
   getSkillGap,
   updatePreferences,
   getPreferences,
+  getMatchedJobs,
 } = require("../controllers/traineeController");
 const authenticate = require("../middleware/authMiddleware");
+const requireRole = require("../middleware/roleMiddleware");
 
 const router = express.Router();
 
-// Pathways is public (trainees don't need to be logged in to explore)
+router.use(authenticate, requireRole("trainee", "admin"));
+
 router.get("/pathways", getPathways);
+router.put("/skills", updateSkills);
+router.get("/skill-gap", getSkillGap);
+router.get("/jobs", getMatchedJobs);
 
-// Protected trainee skills & gap analysis routes
-router.put("/skills", authenticate, updateSkills);
-router.get("/skill-gap", authenticate, getSkillGap);
-
-// Trainee Preferences persistence
-router.get("/preferences", authenticate, getPreferences);
-router.put("/preferences", authenticate, updatePreferences);
+router.get("/preferences", getPreferences);
+router.put("/preferences", updatePreferences);
 
 module.exports = router;

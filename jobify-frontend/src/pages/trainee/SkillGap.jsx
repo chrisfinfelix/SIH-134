@@ -96,6 +96,17 @@ const SkillGap = () => {
   };
 
   const handleSaveAndAnalyse = async () => {
+    if (skillsList.length === 0) {
+      toast({
+        title: "No skills added",
+        description: "Please add at least one skill before running a skill-gap analysis.",
+        status: "warning",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
+    }
     try {
       await updateSkills(skillsList);
       await refetchSkillGap();
@@ -145,6 +156,7 @@ const SkillGap = () => {
   const trendingSkills = skillGapData?.trendingSkills || [];
   const missingSkills = skillGapData?.missingSkills || [];
   const recommendedCourses = skillGapData?.recommendedCourses || [];
+  const placementChance = skillGapData?.placementChance;
 
   return (
     <PageShell
@@ -286,6 +298,29 @@ const SkillGap = () => {
               Comparison between your profile and top 20 trending job skills across India
             </Text>
           </Box>
+
+          {placementChance !== null && placementChance !== undefined && (
+            <Box
+              bg="#eaf6ef"
+              borderWidth="1px"
+              borderColor="#1A7F4B"
+              borderRadius="md"
+              p={4}
+              mb={4}
+            >
+              <HStack spacing={3} align="center">
+                <Icon as={CheckCircleIcon} color="#1A7F4B" boxSize={6} />
+                <Box>
+                  <Text fontSize="sm" fontWeight="700" color="#1A7F4B">
+                    Estimated Placement Chance: {placementChance}%
+                  </Text>
+                  <Text fontSize="xs" color="text.secondary">
+                    Based on placement outcomes of courses whose curriculum most closely matches your current skills.
+                  </Text>
+                </Box>
+              </HStack>
+            </Box>
+          )}
 
           {/* 3 Columns Side-by-Side */}
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} mb={8}>

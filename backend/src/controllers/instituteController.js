@@ -2,6 +2,7 @@ const Institute = require("../models/Institute");
 const Course = require("../models/Course");
 const Job = require("../models/Job");
 const User = require("../models/User");
+const PlacementOutcome = require("../models/PlacementOutcome");
 
 const escapeRegex = (str = "") => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -75,6 +76,7 @@ const createInstitute = async (req, res, next) => {
       address,
       languages,
       totalTrainers,
+      numberOfEmployees,
       skillsCovered,
       contactEmail,
       contactPhone,
@@ -94,6 +96,7 @@ const createInstitute = async (req, res, next) => {
       address: address || "",
       languages: Array.isArray(languages) ? languages : ["English"],
       totalTrainers: Number(totalTrainers) || 10,
+      numberOfEmployees: Number(numberOfEmployees) || 0,
       skillsCovered: Array.isArray(skillsCovered) ? skillsCovered : [],
       contactEmail: contactEmail || req.user?.email || "",
       contactPhone: contactPhone || "",
@@ -121,6 +124,7 @@ const updateInstitute = async (req, res, next) => {
       address,
       languages,
       totalTrainers,
+      numberOfEmployees,
       skillsCovered,
       contactEmail,
       contactPhone,
@@ -135,6 +139,7 @@ const updateInstitute = async (req, res, next) => {
         ...(address !== undefined && { address }),
         ...(languages && { languages }),
         ...(totalTrainers !== undefined && { totalTrainers: Number(totalTrainers) }),
+        ...(numberOfEmployees !== undefined && { numberOfEmployees: Number(numberOfEmployees) }),
         ...(skillsCovered && { skillsCovered }),
         ...(contactEmail !== undefined && { contactEmail }),
         ...(contactPhone !== undefined && { contactPhone }),
@@ -245,13 +250,44 @@ const getMyInstituteDashboard = async (req, res, next) => {
 
     const missingHighDemand = skillComparison.filter((s) => s.status === "Not Available");
 
-    let aiRecommendation = "";
+    let recommendation = "";
     if (missingHighDemand.length > 0) {
       const missingNames = missingHighDemand.slice(0, 3).map((s) => s.skill).join(", ");
-      aiRecommendation = `High regional market demand detected in ${institute.state} for ${missingNames}. Consider adding specialized NSQF vocational modules to bridge this curriculum gap.`;
+      recommendation = `High regional market demand detected in ${institute.state} for ${missingNames}. Consider adding specialized NSQF vocational modules to bridge this curriculum gap.`;
     } else {
-      aiRecommendation = `Excellent curriculum alignment. Institute capabilities match top industry demand skills in ${institute.state}.`;
+      recommendation = `Excellent curriculum alignment. Institute capabilities match top industry demand skills in ${institute.state}.`;
     }
+
+    // Placement outcomes for this institute's own courses, across all recorded years
+    const placementRecords = await PlacementOutcome.find({
+      courseId: { $in: courses.map((c) => c._id) },
+    }).sort({ year: 1 });
+
+    const placementByCourse = {};
+    placementRecords.forEach((p) => {
+      const key = String(p.courseId);
+      if (!placementByCourse[key]) placementByCourse[key] = [];
+      placementByCourse[key].push({ year: p.year, placementPercent: p.placementPercent, source: p.source });
+    });
+
+    const placementOutcomes = courses
+      .map((c) => {
+        const history = placementByCourse[String(c._id)] || [];
+        if (history.length === 0) return null;
+        const avgPlacementPercent = Math.round(
+          history.reduce((sum, h) => sum + h.placementPercent, 0) / history.length
+        );
+        const latest = history[history.length - 1];
+        return {
+          courseId: c._id,
+          courseName: c.courseName,
+          history,
+          avgPlacementPercent,
+          latestPlacementPercent: latest.placementPercent,
+          latestYear: latest.year,
+        };
+      })
+      .filter(Boolean);
 
     res.json({
       success: true,
@@ -259,9 +295,45 @@ const getMyInstituteDashboard = async (req, res, next) => {
         institute,
         courses,
         marketComparison: skillComparison,
-        aiRecommendation,
+        recommendation,
         totalStateJobs: stateJobs.length,
+        placementOutcomes,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// POST /api/institutes/:id/post-job (institute or admin) — stores posting intent, no external automation yet
+const postJob = async (req, res, next) => {
+  try {
+    const institute = await Institute.findById(req.params.id);
+    if (!institute) {
+      return res.status(404).json({ success: false, message: "Institute not found" });
+    }
+
+    const { title, description, skills, salaryRange } = req.body;
+    if (!title || !description) {
+      return res.status(400).json({ success: false, message: "Job title and description are required" });
+    }
+
+    const job = await Job.create({
+      title,
+      description,
+      company: institute.name,
+      district: institute.district,
+      state: institute.state,
+      skills: Array.isArray(skills) ? skills : [],
+      salaryRange: salaryRange || "",
+      source: "institute-manual",
+      postedDate: new Date(),
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Job posting saved. Automated listing to external job boards is coming soon.",
+      data: job,
     });
   } catch (error) {
     next(error);
@@ -275,4 +347,5 @@ module.exports = {
   updateInstitute,
   deleteInstitute,
   getMyInstituteDashboard,
+  postJob,
 };

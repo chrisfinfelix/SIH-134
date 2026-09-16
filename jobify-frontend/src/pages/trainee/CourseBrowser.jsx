@@ -47,14 +47,27 @@ const CourseBrowser = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  // Sector options are pulled from the actual course data, not hardcoded,
+  // so the filter never drifts from what's really in the database.
+  const { data: sectorOptions = [] } = useQuery({
+    queryKey: ["courses", "sectors"],
+    queryFn: async () => {
+      const res = await api.get("/courses/meta/sectors");
+      return res.data?.data || [];
+    },
+    staleTime: 1000 * 60 * 10,
+  });
+
   // Fetch courses with filters and pagination
   const { data: queryResult, isLoading, isFetching } = useQuery({
     queryKey: ["courses", { district, sector, skill, flag, page, limit }],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (district) params.append("district", district);
+      const trimmedDistrict = district.trim();
+      const trimmedSkill = skill.trim();
+      if (trimmedDistrict) params.append("district", trimmedDistrict);
       if (sector) params.append("sector", sector);
-      if (skill) params.append("skill", skill);
+      if (trimmedSkill) params.append("skill", trimmedSkill);
       if (flag) params.append("flag", flag);
       params.append("page", page);
       params.append("limit", limit);
@@ -147,12 +160,11 @@ const CourseBrowser = () => {
               }}
             >
               <option value="">All Sectors</option>
-              <option value="IT-ITeS">IT & Software</option>
-              <option value="Electronics">Electronics & Hardware</option>
-              <option value="Automotive">Automotive & Manufacturing</option>
-              <option value="Healthcare">Healthcare</option>
-              <option value="Renewable Energy">Renewable Energy</option>
-              <option value="Construction">Construction</option>
+              {sectorOptions.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
             </Select>
           </Box>
 
@@ -354,7 +366,7 @@ const CourseBrowser = () => {
                 {selectedCourse.recommendation && (
                   <Box p={3} bg="#fff0e5" borderRadius="md" borderLeft="3px solid #FF6B00">
                     <Text fontSize="2xs" fontWeight="700" color="#FF6B00" textTransform="uppercase">
-                      AI Alignment Recommendation
+                      Curriculum Alignment Recommendation
                     </Text>
                     <Text fontSize="xs" color="text.secondary" mt={1}>
                       {selectedCourse.recommendation}

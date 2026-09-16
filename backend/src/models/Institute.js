@@ -31,6 +31,11 @@ const instituteSchema = new mongoose.Schema(
       default: 10,
       min: 0,
     },
+    numberOfEmployees: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     coursesOffered: [
       {
         type: mongoose.Schema.Types.ObjectId,

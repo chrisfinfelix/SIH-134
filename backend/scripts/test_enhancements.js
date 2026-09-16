@@ -21,7 +21,7 @@ async function testAll() {
   });
   console.log("Institute Dashboard Name:", instDash.data.data.institute.name);
   console.log("Institute Dashboard Market Comparison items:", instDash.data.data.marketComparison.length);
-  console.log("AI Alignment Directive present:", !!instDash.data.data.aiRecommendation);
+  console.log("Alignment Recommendation present:", !!instDash.data.data.recommendation);
 
   console.log("\n--- Testing Trainee Login & Multi-State Pathway ---");
   const traineeLogin = await axios.post(`${BASE}/auth/login`, {

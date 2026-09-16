@@ -16,6 +16,8 @@ const employerRoutes = require("./routes/employerRoutes");
 const traineeRoutes = require("./routes/traineeRoutes");
 const instituteRoutes = require("./routes/instituteRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
+const employerFeedbackRoutes = require("./routes/employerFeedbackRoutes");
 
 const notFound = require("./middleware/notFoundMiddleware");
 const errorHandler = require("./middleware/errorMiddleware");
@@ -68,6 +70,8 @@ app.use("/api/employer", employerRoutes);
 app.use("/api/trainee", traineeRoutes);
 app.use("/api/institutes", instituteRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/employer-feedback", employerFeedbackRoutes);
 
 // ── 404 + error handlers ───────────────────────────────────
 app.use(notFound);

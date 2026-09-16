@@ -3,8 +3,52 @@ const Job = require("../models/Job");
 const GapScore = require("../models/GapScore");
 const User = require("../models/User");
 const Institute = require("../models/Institute");
+const PlacementOutcome = require("../models/PlacementOutcome");
 
 const escapeRegex = (str = "") => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// Estimates a trainee's placement chance by finding courses whose skills most
+// overlap with their profile, then weight-averaging those courses' recorded
+// placement outcomes by how strong each overlap is.
+const computePlacementChance = async (userSkills) => {
+  const userSkillsLower = (userSkills || []).map((s) => s.toLowerCase());
+  if (userSkillsLower.length === 0) return null;
+
+  const courses = await Course.find();
+  const scored = courses
+    .map((c) => {
+      const courseSkillsLower = (c.skills || []).map((s) => s.toLowerCase());
+      if (courseSkillsLower.length === 0) return null;
+      const overlap = courseSkillsLower.filter((s) => userSkillsLower.includes(s)).length;
+      const overlapPct = overlap / courseSkillsLower.length;
+      return overlapPct > 0 ? { courseId: c._id, overlapPct } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.overlapPct - a.overlapPct)
+    .slice(0, 5);
+
+  if (scored.length === 0) return null;
+
+  const placements = await PlacementOutcome.find({ courseId: { $in: scored.map((s) => s.courseId) } });
+  const latestByCourse = {};
+  placements.forEach((p) => {
+    const key = String(p.courseId);
+    if (!latestByCourse[key] || p.year > latestByCourse[key].year) latestByCourse[key] = p;
+  });
+
+  let weightedSum = 0;
+  let weightTotal = 0;
+  scored.forEach((s) => {
+    const p = latestByCourse[String(s.courseId)];
+    if (p) {
+      weightedSum += p.placementPercent * s.overlapPct;
+      weightTotal += s.overlapPct;
+    }
+  });
+
+  if (weightTotal === 0) return null;
+  return Math.round(weightedSum / weightTotal);
+};
 
 // GET /api/trainee/pathways?targetRole=Full Stack Developer&primaryState=Kerala&preferredStates=Karnataka,Tamil Nadu&skills=HTML,CSS,React&deliveryMode=All
 const getPathways = async (req, res, next) => {
@@ -199,15 +243,96 @@ const getPathways = async (req, res, next) => {
 const updateSkills = async (req, res, next) => {
   try {
     const { skills } = req.body;
+
+    const trimmed = Array.isArray(skills) ? skills.map((s) => String(s).trim()).filter(Boolean) : [];
+    const cleanedSkills = trimmed.filter(
+      (s, idx) => trimmed.findIndex((x) => x.toLowerCase() === s.toLowerCase()) === idx
+    );
+
+    if (cleanedSkills.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Please add at least one skill before running a skill-gap analysis.",
+      });
+    }
+
+    if (cleanedSkills.length > 50) {
+      return res.status(400).json({
+        success: false,
+        message: "Please add no more than 50 skills.",
+      });
+    }
+
     const user = await User.findByIdAndUpdate(
       req.user.userId,
-      { skills: skills || [] },
+      { skills: cleanedSkills },
       { new: true }
     );
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
     res.json({ success: true, data: user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/trainee/jobs (protected) — jobs ranked by overlap with the trainee's own skills
+const getMatchedJobs = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const userSkills = user.skills || [];
+    const userSkillsLower = userSkills.map((s) => s.toLowerCase());
+
+    const { district, state } = req.query;
+    const filter = {};
+    if (district) filter.district = new RegExp(escapeRegex(district), "i");
+    if (state) filter.state = new RegExp(escapeRegex(state), "i");
+
+    const jobs = await Job.find(filter).sort({ postedDate: -1 }).limit(200);
+
+    const ranked = jobs
+      .map((job) => {
+        const jobSkills = job.skills || [];
+        const jobSkillsLower = jobSkills.map((s) => s.toLowerCase());
+        const matchedSkills = jobSkills.filter((s) => userSkillsLower.includes(s.toLowerCase()));
+        const missingSkills = jobSkills.filter((s) => !userSkillsLower.includes(s.toLowerCase()));
+        const matchPercentage =
+          jobSkillsLower.length > 0
+            ? Math.round((matchedSkills.length / jobSkillsLower.length) * 100)
+            : 0;
+
+        return {
+          jobId: job._id,
+          title: job.title,
+          company: job.company,
+          district: job.district,
+          state: job.state,
+          salaryRange: job.salaryRange,
+          postedDate: job.postedDate,
+          skills: jobSkills,
+          matchedSkills,
+          missingSkills,
+          matchPercentage,
+        };
+      })
+      .sort((a, b) => b.matchPercentage - a.matchPercentage);
+
+    const placementChance = await computePlacementChance(userSkills);
+
+    res.json({
+      success: true,
+      data: {
+        hasSkills: userSkills.length > 0,
+        userSkills,
+        jobs: ranked,
+        placementChance,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -258,6 +383,8 @@ const getSkillGap = async (req, res, next) => {
       .filter((c) => c.coverCount > 0)
       .sort((a, b) => b.coverCount - a.coverCount);
 
+    const placementChance = await computePlacementChance(user.skills);
+
     res.json({
       success: true,
       data: {
@@ -265,6 +392,7 @@ const getSkillGap = async (req, res, next) => {
         trendingSkills,
         missingSkills,
         recommendedCourses: ranked,
+        placementChance,
       },
     });
   } catch (error) {
@@ -315,5 +443,12 @@ const getPreferences = async (req, res, next) => {
   }
 };
 
-module.exports = { getPathways, updateSkills, getSkillGap, updatePreferences, getPreferences };
+module.exports = {
+  getPathways,
+  updateSkills,
+  getSkillGap,
+  updatePreferences,
+  getPreferences,
+  getMatchedJobs,
+};
 

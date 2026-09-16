@@ -14,9 +14,20 @@ import {
   HStack,
   VStack,
   Badge,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Textarea,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import { EditIcon, WarningIcon, CheckCircleIcon } from "@chakra-ui/icons";
-import { useQuery } from "@tanstack/react-query";
+import { EditIcon, WarningIcon, CheckCircleIcon, BellIcon } from "@chakra-ui/icons";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import PageShell from "../../components/layout/PageShell";
 import StatusBadge from "../../components/shared/StatusBadge";
 import SkillTag from "../../components/shared/SkillTag";
@@ -26,6 +37,10 @@ import api from "../../api/axios";
 
 const Recommendations = () => {
   const [flagFilter, setFlagFilter] = useState("");
+  const [messageTarget, setMessageTarget] = useState(null);
+  const [messageText, setMessageText] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   const { data: recommendations = [], isLoading } = useQuery({
     queryKey: ["admin", "recommendations"],
@@ -34,6 +49,34 @@ const Recommendations = () => {
       return res.data?.data || [];
     },
   });
+
+  const sendNotificationMutation = useMutation({
+    mutationFn: async ({ instituteId, courseId, message }) =>
+      api.post("/notifications", { instituteId, courseId, message }),
+    onSuccess: () => {
+      toast({ title: "Message Sent", description: "The institute has been notified.", status: "success", duration: 3000, isClosable: true });
+      onClose();
+      setMessageText("");
+      setMessageTarget(null);
+    },
+    onError: (err) => {
+      toast({
+        title: "Failed to Send",
+        description: err.response?.data?.message || err.message,
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    },
+  });
+
+  const openSendModal = (item) => {
+    setMessageTarget(item);
+    setMessageText(
+      `Please review and update the curriculum for "${item.course?.courseName || "this course"}" based on current market demand.`
+    );
+    onOpen();
+  };
 
   const filtered = recommendations.filter((rec) => {
     if (!flagFilter) return true;
@@ -100,6 +143,7 @@ const Recommendations = () => {
                   <Th maxW="300px">Recommendation Directive</Th>
                   <Th>Suggested Skills to Add</Th>
                   <Th>Generated Date</Th>
+                  <Th>Action</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -142,6 +186,19 @@ const Recommendations = () => {
                       <Td fontSize="2xs" color="text.muted">
                         {item.createdAt ? new Date(item.createdAt).toLocaleDateString("en-IN") : "Recent"}
                       </Td>
+                      <Td>
+                        <Button
+                          size="xs"
+                          leftIcon={<BellIcon />}
+                          colorScheme="brand"
+                          variant="outline"
+                          isDisabled={!item.instituteId}
+                          title={!item.instituteId ? "No institute linked to this course" : ""}
+                          onClick={() => openSendModal(item)}
+                        >
+                          Send Update
+                        </Button>
+                      </Td>
                     </Tr>
                   );
                 })}
@@ -156,6 +213,50 @@ const Recommendations = () => {
           />
         )}
       </Box>
+
+      {/* Send Curriculum Update Modal */}
+      <Modal isOpen={isOpen} onClose={onClose} size="lg">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader fontSize="md" fontWeight="700">
+            Send Curriculum Update to {messageTarget?.instituteName || "Institute"}
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text fontSize="xs" color="text.muted" mb={2}>
+              Course: {messageTarget?.course?.courseName || "—"}
+            </Text>
+            <Textarea
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
+              rows={5}
+              placeholder="Write a message to the institute..."
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+              colorScheme="brand"
+              isLoading={sendNotificationMutation.isLoading}
+              onClick={() => {
+                if (!messageText.trim()) {
+                  toast({ title: "Message cannot be empty", status: "warning", duration: 3000 });
+                  return;
+                }
+                sendNotificationMutation.mutate({
+                  instituteId: messageTarget.instituteId,
+                  courseId: messageTarget.course?._id,
+                  message: messageText.trim(),
+                });
+              }}
+            >
+              Send Message
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </PageShell>
   );
 };

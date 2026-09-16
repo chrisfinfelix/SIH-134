@@ -12,6 +12,7 @@ import TraineeDashboard from "./pages/trainee/TraineeDashboard";
 import PathwayFinder from "./pages/trainee/PathwayFinder";
 import SkillGap from "./pages/trainee/SkillGap";
 import CourseBrowser from "./pages/trainee/CourseBrowser";
+import JobFinder from "./pages/trainee/JobFinder";
 
 // Employer Pages
 import EmployerDashboard from "./pages/employer/EmployerDashboard";
@@ -43,7 +44,14 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="/trainee/pathways" element={<PathwayFinder />} />
+      <Route
+        path="/trainee/pathways"
+        element={
+          <ProtectedRoute role="trainee">
+            <PathwayFinder />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/trainee/skill-gap"
         element={
@@ -52,7 +60,22 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="/trainee/courses" element={<CourseBrowser />} />
+      <Route
+        path="/trainee/courses"
+        element={
+          <ProtectedRoute role="trainee">
+            <CourseBrowser />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/trainee/jobs"
+        element={
+          <ProtectedRoute role="trainee">
+            <JobFinder />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Employer Routes */}
       <Route

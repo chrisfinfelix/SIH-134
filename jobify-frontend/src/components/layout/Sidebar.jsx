@@ -33,6 +33,7 @@ const Sidebar = ({ role = "trainee", onClose }) => {
     { name: "Pathway Finder", path: "/trainee/pathways", icon: SearchIcon },
     { name: "Skill Gap Analysis", path: "/trainee/skill-gap", icon: RepeatIcon, badge: "NEW" },
     { name: "Browse Courses", path: "/trainee/courses", icon: TimeIcon },
+    { name: "Job Finder", path: "/trainee/jobs", icon: AddIcon, badge: "NEW" },
   ];
 
   const employerLinks = [
@@ -42,9 +43,14 @@ const Sidebar = ({ role = "trainee", onClose }) => {
   ];
 
   const instituteLinks = [
-    { name: "Institute Overview", path: "/institute", icon: ViewIcon, exact: true },
-    { name: "Regional Skill Alignment", path: "/institute#alignment", icon: CheckCircleIcon },
-    { name: "Curriculum & Courses", path: "/trainee/courses", icon: TimeIcon },
+    { name: "Overview", path: "/institute", icon: ViewIcon, exact: true },
+    { name: "Institute Profile", path: "/institute?tab=profile", icon: SettingsIcon },
+    { name: "Course Catalog", path: "/institute?tab=courses", icon: TimeIcon },
+    { name: "Market Alignment", path: "/institute?tab=alignment", icon: CheckCircleIcon },
+    { name: "Placement Outcomes", path: "/institute?tab=placements", icon: StarIcon },
+    { name: "Notifications", path: "/institute?tab=notifications", icon: InfoOutlineIcon },
+    { name: "Employer Feedback", path: "/institute?tab=employer-feedback", icon: EditIcon },
+    { name: "Post a Job", path: "/institute?tab=post-job", icon: AddIcon },
   ];
 
   const adminLinks = [
@@ -92,7 +98,10 @@ const Sidebar = ({ role = "trainee", onClose }) => {
       {/* Navigation List */}
       <VStack spacing={1} align="stretch">
         {links.map((link) => {
-          const isActive = link.exact
+          const [linkPath, linkQuery] = link.path.split("?");
+          const isActive = linkQuery
+            ? location.pathname === linkPath && location.search === `?${linkQuery}`
+            : link.exact
             ? location.pathname === link.path
             : location.pathname.startsWith(link.path);
 

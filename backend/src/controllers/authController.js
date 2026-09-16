@@ -18,7 +18,7 @@ const register = async (req, res, next) => {
       return res.status(409).json({ success: false, message: "Email already registered" });
     }
 
-    const allowedRoles = ["admin", "employer", "trainee"];
+    const allowedRoles = ["admin", "employer", "trainee", "institute"];
     const userRole = allowedRoles.includes(role) ? role : "trainee";
 
     const salt = await bcrypt.genSalt(10);

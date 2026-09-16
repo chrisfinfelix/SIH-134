@@ -111,26 +111,40 @@ const Navbar = ({ onOpenSidebar, isDashboard = false }) => {
               >
                 Home
               </Button>
-              <Button
-                as={RouterLink}
-                to="/trainee/pathways"
-                variant="ghost"
-                color="white"
-                size="sm"
-                _hover={{ bg: "rgba(255,255,255,0.1)" }}
-              >
-                Career Pathways
-              </Button>
-              <Button
-                as={RouterLink}
-                to="/trainee/courses"
-                variant="ghost"
-                color="white"
-                size="sm"
-                _hover={{ bg: "rgba(255,255,255,0.1)" }}
-              >
-                Browse Courses
-              </Button>
+              {isAuthenticated && user && (user.role === "trainee" || user.role === "admin") && (
+                <>
+                  <Button
+                    as={RouterLink}
+                    to="/trainee/pathways"
+                    variant="ghost"
+                    color="white"
+                    size="sm"
+                    _hover={{ bg: "rgba(255,255,255,0.1)" }}
+                  >
+                    Career Pathways
+                  </Button>
+                  <Button
+                    as={RouterLink}
+                    to="/trainee/courses"
+                    variant="ghost"
+                    color="white"
+                    size="sm"
+                    _hover={{ bg: "rgba(255,255,255,0.1)" }}
+                  >
+                    Browse Courses
+                  </Button>
+                  <Button
+                    as={RouterLink}
+                    to="/trainee/jobs"
+                    variant="ghost"
+                    color="white"
+                    size="sm"
+                    _hover={{ bg: "rgba(255,255,255,0.1)" }}
+                  >
+                    Job Finder
+                  </Button>
+                </>
+              )}
             </HStack>
 
             {/* Auth Actions */}
@@ -180,9 +194,14 @@ const Navbar = ({ onOpenSidebar, isDashboard = false }) => {
                     Go to Dashboard
                   </MenuItem>
                   {user.role === "trainee" && (
-                    <MenuItem as={RouterLink} to="/trainee/skill-gap">
-                      My Skill Gap Analysis
-                    </MenuItem>
+                    <>
+                      <MenuItem as={RouterLink} to="/trainee/skill-gap">
+                        My Skill Gap Analysis
+                      </MenuItem>
+                      <MenuItem as={RouterLink} to="/trainee/jobs">
+                        Job Finder
+                      </MenuItem>
+                    </>
                   )}
                   <MenuDivider />
                   <MenuItem onClick={handleLogout} color="red.600">

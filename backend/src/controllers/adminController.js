@@ -217,12 +217,18 @@ const getDistrictSummary = async (req, res, next) => {
 const getRecommendations = async (req, res, next) => {
   try {
     const recommendations = await Recommendation.find()
-      .populate("courseId", "courseName district sector state")
+      .populate({
+        path: "courseId",
+        select: "courseName district sector state instituteId",
+        populate: { path: "instituteId", select: "name" },
+      })
       .sort({ createdAt: -1 });
 
     const data = recommendations.map((r) => ({
       id: r._id,
       course: r.courseId,
+      instituteId: r.courseId?.instituteId?._id || null,
+      instituteName: r.courseId?.instituteId?.name || null,
       recommendationText: r.recommendationText,
       flagType: r.flagType,
       suggestedSkillsToAdd: r.suggestedSkillsToAdd,

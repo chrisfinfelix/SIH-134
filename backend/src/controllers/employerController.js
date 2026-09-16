@@ -1,6 +1,7 @@
 const CourseValidation = require("../models/CourseValidation");
 const EmployerDemandSignal = require("../models/EmployerDemandSignal");
 const Course = require("../models/Course");
+const EmployerFeedback = require("../models/EmployerFeedback");
 
 // POST /api/employer/validate
 const validateCourse = async (req, res, next) => {
@@ -32,6 +33,18 @@ const validateCourse = async (req, res, next) => {
       comment: comment || "",
       validatedSkills: validatedSkills || [],
     });
+
+    // Route this validation to the owning institute through its own feedback channel
+    if (course.instituteId) {
+      await EmployerFeedback.create({
+        instituteId: course.instituteId,
+        courseId: course._id,
+        employerId: req.user.userId,
+        status,
+        comment: comment || "",
+        validatedSkills: validatedSkills || [],
+      });
+    }
 
     res.status(201).json({ success: true, data: validation });
   } catch (error) {

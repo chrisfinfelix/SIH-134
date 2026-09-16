@@ -71,6 +71,8 @@ const Login = () => {
         location.state?.from?.pathname ||
         (loggedInUser.role === "employer"
           ? "/employer"
+          : loggedInUser.role === "institute"
+          ? "/institute"
           : loggedInUser.role === "admin"
           ? "/admin"
           : "/trainee");
@@ -200,6 +202,7 @@ const Login = () => {
             <Text>Admin: admin@jobify.gov.in (or register new)</Text>
             <Text>Employer: employer@techcorp.in</Text>
             <Text>Trainee: trainee@domain.in</Text>
+            <Text>Institute: institute@kitas.kerala.gov.in</Text>
           </Box>
 
           <Divider my={5} borderColor="#E2E8F0" />

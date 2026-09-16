@@ -15,6 +15,7 @@ const sampleInstitutes = [
     address: "Kochi Infopark Road, Kakkanad, Ernakulam - 682030",
     languages: ["English", "Malayalam", "Hindi"],
     totalTrainers: 28,
+    numberOfEmployees: 62,
     skillsCovered: ["Python", "Machine Learning", "FastAPI", "React", "Docker", "SQL", "Cybersecurity", "Data Analysis"],
     contactEmail: "contact@kitas.kerala.gov.in",
     contactPhone: "+91 484 2901122",
@@ -28,6 +29,7 @@ const sampleInstitutes = [
     address: "Outer Ring Road, Marathahalli, Bengaluru - 560037",
     languages: ["English", "Kannada", "Hindi"],
     totalTrainers: 45,
+    numberOfEmployees: 90,
     skillsCovered: ["AWS", "Node.js", "Kubernetes", "DevOps", "Java", "Spring Boot", "React", "AI Prompt Engineering"],
     contactEmail: "admissions@ksdc.kar.gov.in",
     contactPhone: "+91 80 25549001",
@@ -41,6 +43,7 @@ const sampleInstitutes = [
     address: "Guindy Industrial Estate, Chennai - 600032",
     languages: ["English", "Tamil", "Hindi"],
     totalTrainers: 36,
+    numberOfEmployees: 74,
     skillsCovered: ["Data Science", "Python", "Power BI", "SQL", "Cloud Computing", "Flutter", "Embedded Systems"],
     contactEmail: "info@tnsdc.tn.gov.in",
     contactPhone: "+91 44 22501234",
@@ -54,6 +57,7 @@ const sampleInstitutes = [
     address: "Shivaji Nagar, Pune - 411005",
     languages: ["English", "Marathi", "Hindi"],
     totalTrainers: 32,
+    numberOfEmployees: 58,
     skillsCovered: ["Full Stack Development", "React", "MongoDB", "Java", "Automotive CAD", "Agile", "TypeScript"],
     contactEmail: "desk@mvta.mah.gov.in",
     contactPhone: "+91 20 25678900",
@@ -103,6 +107,7 @@ async function run() {
         address: instData.address,
         languages: instData.languages,
         totalTrainers: instData.totalTrainers,
+        numberOfEmployees: instData.numberOfEmployees,
         skillsCovered: instData.skillsCovered,
         contactEmail: instData.contactEmail,
         contactPhone: instData.contactPhone,
@@ -115,6 +120,9 @@ async function run() {
       institute.district = instData.district;
       institute.skillsCovered = instData.skillsCovered;
       institute.languages = instData.languages;
+      if (!institute.numberOfEmployees) {
+        institute.numberOfEmployees = instData.numberOfEmployees;
+      }
       await institute.save();
     }
 

@@ -1,0 +1,69 @@
+flowchart LR
+
+    A["JOB MARKET DATA
+    <br/>Job portals • Placement records • Surveys
+    <br/><b>Python • Scrapy • Pandas</b>"]
+
+    B["DATA PREPROCESSING
+    <br/>Clean • Deduplicate • Normalize
+    <br/><b>Pandas • NumPy</b>"]
+
+    C["AI SKILL EXTRACTION
+    <br/>Extract skills, tools & job requirements
+    <br/><b>spaCy • BERT</b>"]
+
+    D["SKILL STANDARDIZATION
+    <br/>Map extracted skills to NSQF / ESCO
+    <br/><b>Sentence-Transformers</b>"]
+
+    E["FEATURE ENGINEERING
+    <br/>Skill frequency • Demand • Location • Time
+    <br/><b>Python • PostgreSQL</b>"]
+
+    F["DEMAND FORECASTING
+    <br/>Predict future skill & job demand
+    <br/><b>Prophet • statsmodels</b>"]
+
+    G["SKILL GAP ANALYSIS
+    <br/>Compare curriculum skills vs industry demand
+    <br/><b>Sentence-BERT • Cosine Similarity</b>"]
+
+    H["COURSE LIFECYCLE MODEL
+    <br/>Growth • Needs Revision • Oversupplied
+    <br/><b>Python • Rule Engine</b>"]
+
+    I["CAREER PATHWAY MODEL
+    <br/>Find skill-to-career progression paths
+    <br/><b>NetworkX • Graph Algorithms</b>"]
+
+    J["DISTRICT OPTIMIZATION
+    <br/>Recommended seats & budget allocation
+    <br/><b>PuLP • SciPy.optimize</b>"]
+
+    K["ACTIONABLE INSIGHTS
+    <br/>High-demand skills • Curriculum updates
+    <br/>District training recommendations"]
+
+    A --> B --> C --> D --> E
+
+    E --> F
+    E --> G
+    E --> H
+    E --> I
+
+    F --> J
+    G --> J
+    H --> J
+
+    F --> K
+    G --> K
+    H --> K
+    I --> K
+
+    classDef input fill:#E8F1FF,stroke:#2563EB,stroke-width:2px,color:#111827;
+    classDef ml fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#111827;
+    classDef output fill:#E8F8F0,stroke:#16A34A,stroke-width:2px,color:#111827;
+
+    class A,B,C,D,E input;
+    class F,G,H,I ml;
+    class J,K output;

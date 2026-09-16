@@ -1,0 +1,90 @@
+%% ML Architecture - condensed, horizontal layout for SIH slide
+%% Structure mirrors reference screenshot: pipeline (blue) -> models (purple) -> outputs (green)
+
+flowchart LR
+    classDef pipeline fill:#eaf1ff,stroke:#2255cc,stroke-width:2px,color:#111;
+    classDef model fill:#f6ecff,stroke:#9b2fd9,stroke-width:2px,color:#111;
+    classDef output fill:#e9fbf0,stroke:#1fa855,stroke-width:2px,color:#111;
+    classDef human fill:#fff4e5,stroke:#d98324,stroke-width:2px,color:#111;
+
+    A["`**DATA SOURCES**
+    Job portals • employer surveys • placement records • course docs • industry news
+    **Web scraping • Python**`"]
+
+    B["`**INGESTION & DEDUP**
+    Hash-based duplicate check • new record validation
+    **Python • Pandas**`"]
+
+    C["`**SKILL & ENTITY EXTRACTION**
+    NER for skills, tools & job titles
+    **Fine-tuned BERT • spaCy**`"]
+
+    D["`**SKILL STANDARDIZATION**
+    Map to canonical skills / NSQF codes • human review for low-confidence matches
+    **Sentence-BERT • DistilBERT**`"]
+
+    E["`**FEATURE STORE**
+    Postings, courses, placements & engineered features
+    **PostgreSQL**`"]
+
+    N["`**VALIDATION QUEUE**
+    Low-confidence skill matches (< 0.75 similarity) routed for review`"]
+
+    O["`**HUMAN REVIEW DASHBOARD**
+    Experts confirm / correct skill mappings
+    **Manual review**`"]
+
+    F["`**DEMAND FORECASTING**
+    Predict future skill & job demand
+    **Prophet • LSTM**`"]
+
+    G["`**SKILL GAP ANALYSIS**
+    Compare curriculum skills vs industry demand
+    **Cosine Similarity**`"]
+
+    H["`**TREND DETECTION**
+    Spot emerging skill / tech topics
+    **BERTopic**`"]
+
+    I["`**COURSE LIFECYCLE MODEL**
+    Flag oversupplied or outdated courses
+    **Rule Engine**`"]
+
+    J["`**CURRICULUM RECOMMENDER**
+    Rank & suggest curriculum updates
+    **LightGBM**`"]
+
+    K["`**DISTRICT TRAINING OPTIMIZER**
+    Optimal seat & budget allocation
+    **PuLP • Linear Programming**`"]
+
+    L["`**CAREER PATHWAY MODEL**
+    Skill-to-career progression paths
+    **NetworkX • PageRank**`"]
+
+    M["`**DASHBOARDS & APIs**
+    Actionable insights • curriculum updates • district training recommendations`"]
+
+    A --> B --> C --> D --> E
+    D -.->|"low confidence"| N
+    N --> O
+    O -->|"confirms / corrects"| E
+    O -.->|"retrain monthly"| C
+    E --> F
+    E --> G
+    E --> H
+    E --> I
+    F --> J
+    G --> J
+    I --> J
+    F --> K
+    J --> K
+    E --> L
+    J --> M
+    K --> M
+    L --> M
+
+    class A,B,C,D,E pipeline
+    class F,G,H,I,J,K,L model
+    class M output
+    class N,O human

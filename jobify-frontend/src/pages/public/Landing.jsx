@@ -106,7 +106,7 @@ const Landing = () => {
             <HStack spacing={4} pt={2} wrap="wrap">
               <Button
                 as={RouterLink}
-                to="/trainee/pathways"
+                to="/login"
                 size="lg"
                 bg="#FF6B00"
                 color="white"
@@ -115,11 +115,11 @@ const Landing = () => {
                 px={8}
                 fontWeight="700"
               >
-                Explore as Trainee
+                Login to Get Started
               </Button>
               <Button
                 as={RouterLink}
-                to="/login"
+                to="/register"
                 size="lg"
                 variant="outline"
                 borderColor="white"
@@ -128,7 +128,7 @@ const Landing = () => {
                 px={6}
                 fontWeight="600"
               >
-                Employer / Admin Login
+                Create an Account
               </Button>
             </HStack>
           </VStack>
@@ -300,7 +300,7 @@ const Landing = () => {
               For Admins & Authorities
             </Heading>
             <Text fontSize="sm" color="text.secondary" mb={4} lineHeight="relaxed">
-              Monitor regional labor imbalances, identify outdated curricula with AI-driven gap scoring, review automated update recommendations, and bulk manage national job postings.
+              Monitor regional labor imbalances, identify outdated curricula with data-driven gap scoring, review automated update recommendations, and bulk manage national job postings.
             </Text>
             <VStack align="flex-start" spacing={1.5} fontSize="xs" color="text.muted" mb={5}>
               <Text>• Macro skill demand analytics</Text>

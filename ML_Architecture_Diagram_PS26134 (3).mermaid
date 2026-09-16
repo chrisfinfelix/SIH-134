@@ -1,0 +1,58 @@
+flowchart TD
+    subgraph DS["Data sources"]
+        DS1["Job portals / NCS"]
+        DS2["Employer surveys"]
+        DS3["Placement records DB"]
+        DS4["Course & syllabus docs"]
+        DS5["Industry consultations"]
+        DS6["Tech news & trends"]
+    end
+
+    DS1 --> ING
+    DS2 --> ING
+    DS3 --> ING
+    DS4 --> ING
+    DS5 --> ING
+    DS6 --> ING
+
+    ING{"New & unique record?"}
+    ING -->|"No, duplicate hash"| DISCARD["Discard"]
+    ING -->|"Yes"| NER["NER: skill & entity extraction<br/>Fine-tuned BERT / spaCy"]
+
+    NER --> TITLE["Job title classifier<br/>DistilBERT to occupation code"]
+    NER --> SKILLSTD{"Skill similarity >= 0.75?"}
+
+    SKILLSTD -->|"Yes"| CANON["Auto-map to canonical skill<br/>Sentence-BERT + cosine sim"]
+    SKILLSTD -->|"No"| EVQ["Employer validation queue"]
+    EVQ --> HUMANREVIEW["Human review dashboard"]
+    HUMANREVIEW -->|"confirms / corrects"| CANON
+    HUMANREVIEW -.->|"retrain monthly"| NER
+
+    TITLE --> FS[("Feature store<br/>postings, courses, placements")]
+    CANON --> FS
+
+    FS --> FORECAST["Demand forecasting<br/>Prophet / LSTM"]
+    FS --> GAP["Skill gap analysis<br/>cosine similarity on embeddings"]
+    FS --> TREND["Emerging trend detection<br/>BERTopic"]
+    FS --> OBS{"enrollment/openings > 3.0 AND<br/>placement < 0.4 AND trend < 0 ?"}
+
+    OBS -->|"Yes"| FLAG["Flag course: oversupplied"]
+    OBS -->|"No"| OK["Course OK"]
+
+    TREND --> NEWTOPIC{"docs >= 50 AND growth >= 40%<br/>AND not in taxonomy?"}
+    NEWTOPIC -->|"Yes"| EVQ
+    NEWTOPIC -->|"No"| IGNORE["Monitor next cycle"]
+
+    FORECAST --> CURR["Curriculum recommendation engine<br/>weighted ranking / LightGBM"]
+    GAP --> CURR
+    FLAG --> CURR
+
+    FORECAST --> OPT["District training plan optimizer<br/>Linear programming"]
+    CURR --> OPT
+
+    FS --> PATH["Career pathway recommender<br/>skill graph + PageRank"]
+
+    OPT --> OUT["Dashboards & APIs"]
+    CURR --> OUT
+    PATH --> OUT
+    FLAG --> OUT

@@ -125,7 +125,7 @@ const TraineeDashboard = () => {
       </SimpleGrid>
 
       {/* Quick Action Cards */}
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} mb={8}>
+      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mb={8}>
         <Box
           bg="white"
           p={6}
@@ -215,6 +215,51 @@ const TraineeDashboard = () => {
             rightIcon={<ArrowForwardIcon />}
           >
             Launch Skill Gap Tool
+          </Button>
+        </Box>
+
+        <Box
+          bg="white"
+          p={6}
+          borderRadius="md"
+          borderWidth="1px"
+          borderColor="#E2E8F0"
+          boxShadow="sm"
+          _hover={{ borderColor: "govSuccess.500" }}
+          transition="all 0.2s"
+        >
+          <Flex align="center" gap={3} mb={3}>
+            <Flex
+              w={10}
+              h={10}
+              borderRadius="md"
+              bg="#eaf6ef"
+              color="#1A7F4B"
+              align="center"
+              justify="center"
+            >
+              <Icon as={CheckCircleIcon} boxSize={5} />
+            </Flex>
+            <Box>
+              <Heading as="h3" size="sm" fontWeight="700" color="text.primary">
+                Find Jobs Matching Your Skills
+              </Heading>
+              <Text fontSize="xs" color="text.muted">
+                Live postings ranked by how well they match your profile
+              </Text>
+            </Box>
+          </Flex>
+          <Text fontSize="sm" color="text.secondary" mb={4}>
+            Browse active job openings with a match score and clear guidance on which skills you're missing for each role.
+          </Text>
+          <Button
+            as={RouterLink}
+            to="/trainee/jobs"
+            colorScheme="green"
+            size="sm"
+            rightIcon={<ArrowForwardIcon />}
+          >
+            Open Job Finder
           </Button>
         </Box>
       </SimpleGrid>

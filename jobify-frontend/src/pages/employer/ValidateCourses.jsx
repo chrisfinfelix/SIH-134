@@ -34,12 +34,13 @@ import {
   HStack,
   Flex,
   SimpleGrid,
+  Input,
+  Select,
   useDisclosure,
   useToast,
-  Divider,
 } from "@chakra-ui/react";
-import { CheckCircleIcon, EditIcon, StarIcon } from "@chakra-ui/icons";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { CheckCircleIcon, EditIcon, SearchIcon } from "@chakra-ui/icons";
+import { keepPreviousData, useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import PageShell from "../../components/layout/PageShell";
 import StatusBadge from "../../components/shared/StatusBadge";
 import SkillTag from "../../components/shared/SkillTag";
@@ -57,14 +58,40 @@ const ValidateCourses = () => {
   const [comment, setComment] = useState("");
   const [validatedSkills, setValidatedSkills] = useState([]);
 
+  const [skillFilter, setSkillFilter] = useState("");
+  const [districtFilter, setDistrictFilter] = useState("");
+  const [sectorFilter, setSectorFilter] = useState("");
+
+  // Sector options are pulled from the actual course data, not hardcoded
+  const { data: sectorOptions = [] } = useQuery({
+    queryKey: ["courses", "sectors"],
+    queryFn: async () => {
+      const res = await api.get("/courses/meta/sectors");
+      return res.data?.data || [];
+    },
+    staleTime: 1000 * 60 * 10,
+  });
+
   // Fetch courses to review
   const { data: coursesResult, isLoading: isCoursesLoading } = useQuery({
-    queryKey: ["courses", "all"],
+    queryKey: ["courses", "all", { skillFilter, districtFilter, sectorFilter }],
     queryFn: async () => {
-      const res = await api.get("/courses?limit=50");
+      const params = new URLSearchParams();
+      params.append("limit", "50");
+      if (skillFilter.trim()) params.append("skill", skillFilter.trim());
+      if (districtFilter.trim()) params.append("district", districtFilter.trim());
+      if (sectorFilter) params.append("sector", sectorFilter);
+      const res = await api.get(`/courses?${params.toString()}`);
       return res.data?.data || (Array.isArray(res.data) ? res.data : []);
     },
+    placeholderData: keepPreviousData,
   });
+
+  const handleResetFilters = () => {
+    setSkillFilter("");
+    setDistrictFilter("");
+    setSectorFilter("");
+  };
 
   // Fetch employer's own validations
   const { data: myValidations = [], isLoading: isValidationsLoading } = useQuery({
@@ -148,6 +175,41 @@ const ValidateCourses = () => {
           <TabPanels>
             {/* Tab 1: Pending Courses */}
             <TabPanel p={4}>
+              {/* Filter Bar */}
+              <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={3} mb={4}>
+                <Input
+                  size="sm"
+                  placeholder="Filter by skill..."
+                  value={skillFilter}
+                  onChange={(e) => setSkillFilter(e.target.value)}
+                />
+                <Input
+                  size="sm"
+                  placeholder="Filter by district..."
+                  value={districtFilter}
+                  onChange={(e) => setDistrictFilter(e.target.value)}
+                />
+                <HStack spacing={2}>
+                  <Select
+                    size="sm"
+                    placeholder="All Sectors"
+                    value={sectorFilter}
+                    onChange={(e) => setSectorFilter(e.target.value)}
+                  >
+                    {sectorOptions.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </Select>
+                  {(skillFilter || districtFilter || sectorFilter) && (
+                    <Button size="sm" variant="ghost" onClick={handleResetFilters}>
+                      Clear
+                    </Button>
+                  )}
+                </HStack>
+              </SimpleGrid>
+
               {isCoursesLoading ? (
                 <LoadingSpinner message="Fetching courses awaiting validation..." />
               ) : courses.length > 0 ? (
@@ -201,9 +263,15 @@ const ValidateCourses = () => {
                 </Box>
               ) : (
                 <EmptyState
-                  icon={CheckCircleIcon}
-                  title="No courses pending review"
-                  description="All available vocational courses have been reviewed."
+                  icon={SearchIcon}
+                  title="No courses found"
+                  description={
+                    skillFilter || districtFilter || sectorFilter
+                      ? "Try adjusting or clearing your filters."
+                      : "All available vocational courses have been reviewed."
+                  }
+                  actionLabel={skillFilter || districtFilter || sectorFilter ? "Clear Filters" : undefined}
+                  onAction={skillFilter || districtFilter || sectorFilter ? handleResetFilters : undefined}
                 />
               )}
             </TabPanel>
@@ -228,7 +296,7 @@ const ValidateCourses = () => {
                       {myValidations.map((v, idx) => (
                         <Tr key={v._id || idx} _hover={{ bg: "gray.50" }}>
                           <Td fontWeight="600" color="text.primary">
-                            {v.course?.courseName || v.courseName || "Vocational Course"}
+                            {v.courseId?.courseName || v.course?.courseName || v.courseName || "Course name unavailable"}
                           </Td>
                           <Td>
                             <StatusBadge flag={v.status} />

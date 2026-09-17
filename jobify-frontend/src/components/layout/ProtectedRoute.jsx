@@ -15,10 +15,9 @@ const ProtectedRoute = ({ role, children }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Admin has access to everything, or check if role matches
   if (role) {
     const allowedRoles = Array.isArray(role) ? role : [role];
-    if (!allowedRoles.includes(user.role) && user.role !== "admin") {
+    if (!allowedRoles.includes(user.role)) {
       // Redirect to their respective dashboard
       const target =
         user.role === "employer"

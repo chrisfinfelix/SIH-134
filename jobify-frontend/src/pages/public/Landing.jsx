@@ -21,6 +21,7 @@ import {
   RepeatIcon,
   LockIcon,
   ArrowForwardIcon,
+  AtSignIcon,
 } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -183,7 +184,7 @@ const Landing = () => {
           </Text>
         </VStack>
 
-        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6}>
           {/* Trainee Card */}
           <Box
             bg="white"
@@ -316,6 +317,52 @@ const Landing = () => {
               w="full"
             >
               Access Admin Intelligence
+            </Button>
+          </Box>
+
+          {/* Institute Card */}
+          <Box
+            bg="white"
+            p={6}
+            borderRadius="md"
+            borderWidth="1px"
+            borderColor="#E2E8F0"
+            borderTop="4px solid #6B46C1"
+            boxShadow="sm"
+          >
+            <Flex
+              w={12}
+              h={12}
+              align="center"
+              justify="center"
+              borderRadius="md"
+              bg="#f0e9fa"
+              color="#6B46C1"
+              mb={4}
+            >
+              <Icon as={AtSignIcon} boxSize={6} />
+            </Flex>
+            <Heading as="h3" size="md" fontWeight="700" color="text.primary" mb={2}>
+              For Training Institutes
+            </Heading>
+            <Text fontSize="sm" color="text.secondary" mb={4} lineHeight="relaxed">
+              Manage your course catalog, track curriculum alignment with regional market demand, and monitor placement outcomes across your training programs.
+            </Text>
+            <VStack align="flex-start" spacing={1.5} fontSize="xs" color="text.muted" mb={5}>
+              <Text>• Course & curriculum management</Text>
+              <Text>• Market alignment insights</Text>
+              <Text>• Placement outcome tracking</Text>
+            </VStack>
+            <Button
+              as={RouterLink}
+              to="/institute"
+              size="sm"
+              bg="#6B46C1"
+              color="white"
+              _hover={{ bg: "#553C9A" }}
+              w="full"
+            >
+              Access Institute Portal
             </Button>
           </Box>
         </SimpleGrid>

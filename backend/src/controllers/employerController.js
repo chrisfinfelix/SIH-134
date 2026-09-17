@@ -2,6 +2,7 @@ const CourseValidation = require("../models/CourseValidation");
 const EmployerDemandSignal = require("../models/EmployerDemandSignal");
 const Course = require("../models/Course");
 const EmployerFeedback = require("../models/EmployerFeedback");
+const Job = require("../models/Job");
 
 // POST /api/employer/validate
 const validateCourse = async (req, res, next) => {
@@ -97,4 +98,64 @@ const getDemandSignals = async (req, res, next) => {
   }
 };
 
-module.exports = { validateCourse, getValidations, createDemandSignal, getDemandSignals };
+// POST /api/employer/jobs
+const createJobPosting = async (req, res, next) => {
+  try {
+    const { title, company, district, state, skills, proficiencyLevel, salaryRange, description } = req.body;
+
+    if (!title || !company) {
+      return res.status(400).json({ success: false, message: "title and company are required" });
+    }
+
+    const job = await Job.create({
+      employerId: req.user.userId,
+      title,
+      company,
+      district: district || "",
+      state: state || "",
+      skills: skills || [],
+      proficiencyLevel: proficiencyLevel || "",
+      salaryRange: salaryRange || "",
+      description: description || "",
+      source: "employer_portal",
+      postedDate: new Date(),
+    });
+
+    res.status(201).json({ success: true, data: job });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/employer/jobs
+const getJobPostings = async (req, res, next) => {
+  try {
+    const jobs = await Job.find({ employerId: req.user.userId }).sort({ createdAt: -1 });
+    res.json({ success: true, data: jobs });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// DELETE /api/employer/jobs/:id
+const deleteJobPosting = async (req, res, next) => {
+  try {
+    const job = await Job.findOneAndDelete({ _id: req.params.id, employerId: req.user.userId });
+    if (!job) {
+      return res.status(404).json({ success: false, message: "Job posting not found" });
+    }
+    res.json({ success: true, data: job });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  validateCourse,
+  getValidations,
+  createDemandSignal,
+  getDemandSignals,
+  createJobPosting,
+  getJobPostings,
+  deleteJobPosting,
+};

@@ -143,11 +143,7 @@ const getPathways = async (req, res, next) => {
     let regionalTrendingSkills = Object.entries(regionalSkillCounts)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 8)
-      .map(([skill]) => skill);
-
-    if (regionalTrendingSkills.length === 0) {
-      regionalTrendingSkills = ["React", "Python", "Cloud", "Data Analytics", "Cybersecurity"];
-    }
+      .map(([skill, demandCount]) => ({ skill, demandCount }));
 
     // 4. Find & Rank Recommended Courses
     let allCourses = await Course.find();

@@ -18,6 +18,7 @@ import JobFinder from "./pages/trainee/JobFinder";
 import EmployerDashboard from "./pages/employer/EmployerDashboard";
 import ValidateCourses from "./pages/employer/ValidateCourses";
 import DemandSignals from "./pages/employer/DemandSignals";
+import PostJobs from "./pages/employer/PostJobs";
 
 // Institute Pages
 import InstituteDashboard from "./pages/institute/InstituteDashboard";
@@ -81,7 +82,7 @@ function App() {
       <Route
         path="/employer"
         element={
-          <ProtectedRoute role={["employer", "admin"]}>
+          <ProtectedRoute role="employer">
             <EmployerDashboard />
           </ProtectedRoute>
         }
@@ -89,7 +90,7 @@ function App() {
       <Route
         path="/employer/validate"
         element={
-          <ProtectedRoute role={["employer", "admin"]}>
+          <ProtectedRoute role="employer">
             <ValidateCourses />
           </ProtectedRoute>
         }
@@ -97,8 +98,16 @@ function App() {
       <Route
         path="/employer/demand-signals"
         element={
-          <ProtectedRoute role={["employer", "admin"]}>
+          <ProtectedRoute role="employer">
             <DemandSignals />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/employer/post-jobs"
+        element={
+          <ProtectedRoute role="employer">
+            <PostJobs />
           </ProtectedRoute>
         }
       />
@@ -107,7 +116,7 @@ function App() {
       <Route
         path="/institute"
         element={
-          <ProtectedRoute role={["institute", "admin"]}>
+          <ProtectedRoute role="institute">
             <InstituteDashboard />
           </ProtectedRoute>
         }

@@ -54,6 +54,7 @@ import {
 import {
   EditIcon,
   AddIcon,
+  MinusIcon,
   CheckCircleIcon,
   WarningIcon,
   InfoIcon,
@@ -243,6 +244,28 @@ const InstituteDashboard = () => {
     },
   });
 
+  // Adjust Number of Employees Mutation (quick +/- from the Overview card)
+  const adjustEmployeesMutation = useMutation({
+    mutationFn: async (delta) => {
+      if (!instituteId) throw new Error("Institute ID not found");
+      const nextCount = Math.max(0, (institute.numberOfEmployees || 0) + delta);
+      const res = await api.put(`/institutes/${instituteId}`, { numberOfEmployees: nextCount });
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["institute", "dashboard"] });
+    },
+    onError: (err) => {
+      toast({
+        title: "Failed to Update Employee Count",
+        description: err.response?.data?.message || err.message,
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    },
+  });
+
   // Create / Update Course Mutation
   const saveCourseMutation = useMutation({
     mutationFn: async (courseData) => {
@@ -411,9 +434,31 @@ const InstituteDashboard = () => {
                     <StatLabel fontSize="2xs" color="text.muted" textTransform="uppercase" fontWeight="700">
                       Number of Employees
                     </StatLabel>
-                    <StatNumber color="brand.500" fontSize="2xl">
-                      {institute.numberOfEmployees || 0}
-                    </StatNumber>
+                    <Flex align="center" justify="space-between" mt={1}>
+                      <StatNumber color="brand.500" fontSize="2xl">
+                        {institute.numberOfEmployees || 0}
+                      </StatNumber>
+                      <HStack spacing={1}>
+                        <IconButton
+                          aria-label="Decrease number of employees"
+                          icon={<MinusIcon boxSize={2.5} />}
+                          size="xs"
+                          variant="outline"
+                          colorScheme="brand"
+                          isDisabled={(institute.numberOfEmployees || 0) <= 0}
+                          isLoading={adjustEmployeesMutation.isLoading}
+                          onClick={() => adjustEmployeesMutation.mutate(-1)}
+                        />
+                        <IconButton
+                          aria-label="Increase number of employees"
+                          icon={<AddIcon boxSize={2.5} />}
+                          size="xs"
+                          colorScheme="brand"
+                          isLoading={adjustEmployeesMutation.isLoading}
+                          onClick={() => adjustEmployeesMutation.mutate(1)}
+                        />
+                      </HStack>
+                    </Flex>
                     <StatHelpText fontSize="2xs">Total Institute Staff</StatHelpText>
                   </Stat>
                 </CardBody>

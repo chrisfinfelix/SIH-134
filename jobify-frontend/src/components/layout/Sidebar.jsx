@@ -38,7 +38,6 @@ const Sidebar = ({ role = "trainee", onClose }) => {
 
   const employerLinks = [
     { name: "Overview Dashboard", path: "/employer", icon: ViewIcon, exact: true },
-    { name: "Post Jobs", path: "/employer/post-jobs", icon: AddIcon, badge: "NEW" },
     { name: "Validate Courses", path: "/employer/validate", icon: CheckCircleIcon },
     { name: "Demand Signals", path: "/employer/demand-signals", icon: AddIcon },
   ];

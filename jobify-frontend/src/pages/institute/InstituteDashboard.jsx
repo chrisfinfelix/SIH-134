@@ -38,8 +38,6 @@ import {
   Divider,
   Alert,
   AlertIcon,
-  AlertTitle,
-  AlertDescription,
   Stat,
   StatLabel,
   StatNumber,
@@ -61,6 +59,8 @@ import {
   BellIcon,
   DeleteIcon,
   StarIcon,
+  ViewIcon,
+  ArrowUpIcon,
 } from "@chakra-ui/icons";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
@@ -427,107 +427,235 @@ const InstituteDashboard = () => {
         <TabPanels>
           {/* ── Overview ─────────────────────────────────────────── */}
           <TabPanel px={0}>
+            {/* Hero banner */}
+            <Box
+              borderRadius="xl"
+              mb={6}
+              px={{ base: 5, md: 7 }}
+              py={{ base: 5, md: 6 }}
+              bgGradient="linear(135deg, #003580 0%, #0057B8 55%, #FF6B00 160%)"
+              color="white"
+              position="relative"
+              overflow="hidden"
+              boxShadow="0 10px 30px -12px rgba(0, 53, 128, 0.45)"
+            >
+              <Box
+                position="absolute"
+                top="-40px"
+                right="-40px"
+                w="180px"
+                h="180px"
+                borderRadius="full"
+                bg="whiteAlpha.100"
+              />
+              <Box
+                position="absolute"
+                bottom="-60px"
+                right="120px"
+                w="140px"
+                h="140px"
+                borderRadius="full"
+                bg="whiteAlpha.100"
+              />
+              <Flex
+                position="relative"
+                justify="space-between"
+                align={{ base: "flex-start", md: "center" }}
+                direction={{ base: "column", md: "row" }}
+                gap={3}
+              >
+                <Box>
+                  <HStack spacing={2} mb={1}>
+                    <Badge colorScheme="whiteAlpha" bg="whiteAlpha.300" fontSize="2xs" px={2} py={0.5} borderRadius="sm">
+                      VERIFIED INSTITUTE
+                    </Badge>
+                  </HStack>
+                  <Heading size="lg" fontWeight="800" letterSpacing="tight">
+                    {institute.name || "Your Institute"}
+                  </Heading>
+                  <Text fontSize="sm" color="whiteAlpha.800" mt={1}>
+                    {institute.district ? `${institute.district}, ${institute.state}` : "Complete your profile to unlock full insights"}
+                  </Text>
+                </Box>
+                <HStack spacing={2}>
+                  <Button size="sm" variant="solid" bg="white" color="#003580" _hover={{ bg: "whiteAlpha.900" }} leftIcon={<EditIcon />} onClick={onEditOpen}>
+                    Edit Profile
+                  </Button>
+                  <Button size="sm" variant="outline" borderColor="whiteAlpha.500" color="white" _hover={{ bg: "whiteAlpha.200" }} leftIcon={<AddIcon />} onClick={openAddCourse}>
+                    Add Course
+                  </Button>
+                </HStack>
+              </Flex>
+            </Box>
+
             <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={4} mb={6}>
-              <Card borderWidth="1px" borderColor="#E2E8F0" shadow="sm">
+              <Card
+                borderWidth="1px"
+                borderColor="#E2E8F0"
+                borderTop="3px solid"
+                borderTopColor="brand.500"
+                shadow="sm"
+                borderRadius="lg"
+                transition="all 0.2s"
+                _hover={{ shadow: "md", transform: "translateY(-2px)" }}
+              >
                 <CardBody>
-                  <Stat>
-                    <StatLabel fontSize="2xs" color="text.muted" textTransform="uppercase" fontWeight="700">
-                      Number of Employees
-                    </StatLabel>
-                    <Flex align="center" justify="space-between" mt={1}>
-                      <StatNumber color="brand.500" fontSize="2xl">
+                  <Flex justify="space-between" align="flex-start">
+                    <Stat>
+                      <StatLabel fontSize="2xs" color="text.muted" textTransform="uppercase" fontWeight="700">
+                        Number of Employees
+                      </StatLabel>
+                      <StatNumber color="brand.500" fontSize="2xl" mt={1}>
                         {institute.numberOfEmployees || 0}
                       </StatNumber>
-                      <HStack spacing={1}>
-                        <IconButton
-                          aria-label="Decrease number of employees"
-                          icon={<MinusIcon boxSize={2.5} />}
-                          size="xs"
-                          variant="outline"
-                          colorScheme="brand"
-                          isDisabled={(institute.numberOfEmployees || 0) <= 0}
-                          isLoading={adjustEmployeesMutation.isLoading}
-                          onClick={() => adjustEmployeesMutation.mutate(-1)}
-                        />
-                        <IconButton
-                          aria-label="Increase number of employees"
-                          icon={<AddIcon boxSize={2.5} />}
-                          size="xs"
-                          colorScheme="brand"
-                          isLoading={adjustEmployeesMutation.isLoading}
-                          onClick={() => adjustEmployeesMutation.mutate(1)}
-                        />
-                      </HStack>
+                      <StatHelpText fontSize="2xs" mb={0}>Total Institute Staff</StatHelpText>
+                    </Stat>
+                    <Flex
+                      align="center"
+                      justify="center"
+                      boxSize="36px"
+                      borderRadius="full"
+                      bg="brand.50"
+                      color="brand.500"
+                      flexShrink={0}
+                    >
+                      <ViewIcon boxSize={4} />
                     </Flex>
-                    <StatHelpText fontSize="2xs">Total Institute Staff</StatHelpText>
-                  </Stat>
+                  </Flex>
+                  <HStack spacing={1} mt={3} justify="flex-end">
+                    <IconButton
+                      aria-label="Decrease number of employees"
+                      icon={<MinusIcon boxSize={2.5} />}
+                      size="xs"
+                      variant="outline"
+                      colorScheme="brand"
+                      isDisabled={(institute.numberOfEmployees || 0) <= 0}
+                      isLoading={adjustEmployeesMutation.isLoading}
+                      onClick={() => adjustEmployeesMutation.mutate(-1)}
+                    />
+                    <IconButton
+                      aria-label="Increase number of employees"
+                      icon={<AddIcon boxSize={2.5} />}
+                      size="xs"
+                      colorScheme="brand"
+                      isLoading={adjustEmployeesMutation.isLoading}
+                      onClick={() => adjustEmployeesMutation.mutate(1)}
+                    />
+                  </HStack>
                 </CardBody>
               </Card>
 
-              <Card borderWidth="1px" borderColor="#E2E8F0" shadow="sm">
+              <Card
+                borderWidth="1px"
+                borderColor="#E2E8F0"
+                borderTop="3px solid"
+                borderTopColor="blue.500"
+                shadow="sm"
+                borderRadius="lg"
+                transition="all 0.2s"
+                _hover={{ shadow: "md", transform: "translateY(-2px)" }}
+              >
                 <CardBody>
-                  <Stat>
-                    <StatLabel fontSize="2xs" color="text.muted" textTransform="uppercase" fontWeight="700">
-                      Certified Trainers
-                    </StatLabel>
-                    <StatNumber color="blue.600" fontSize="2xl">
-                      {institute.totalTrainers || 0}
-                    </StatNumber>
-                    <StatHelpText fontSize="2xs">Active Faculty & Instructors</StatHelpText>
-                  </Stat>
+                  <Flex justify="space-between" align="flex-start">
+                    <Stat>
+                      <StatLabel fontSize="2xs" color="text.muted" textTransform="uppercase" fontWeight="700">
+                        Certified Trainers
+                      </StatLabel>
+                      <StatNumber color="blue.600" fontSize="2xl" mt={1}>
+                        {institute.totalTrainers || 0}
+                      </StatNumber>
+                      <StatHelpText fontSize="2xs" mb={0}>Active Faculty & Instructors</StatHelpText>
+                    </Stat>
+                    <Flex align="center" justify="center" boxSize="36px" borderRadius="full" bg="blue.50" color="blue.500" flexShrink={0}>
+                      <StarIcon boxSize={4} />
+                    </Flex>
+                  </Flex>
                 </CardBody>
               </Card>
 
-              <Card borderWidth="1px" borderColor="#E2E8F0" shadow="sm">
+              <Card
+                borderWidth="1px"
+                borderColor="#E2E8F0"
+                borderTop="3px solid"
+                borderTopColor="green.500"
+                shadow="sm"
+                borderRadius="lg"
+                transition="all 0.2s"
+                _hover={{ shadow: "md", transform: "translateY(-2px)" }}
+              >
                 <CardBody>
-                  <Stat>
-                    <StatLabel fontSize="2xs" color="text.muted" textTransform="uppercase" fontWeight="700">
-                      Active Courses
-                    </StatLabel>
-                    <StatNumber color="green.600" fontSize="2xl">
-                      {courses.length}
-                    </StatNumber>
-                    <StatHelpText fontSize="2xs">Registered Curriculum Tracks</StatHelpText>
-                  </Stat>
+                  <Flex justify="space-between" align="flex-start">
+                    <Stat>
+                      <StatLabel fontSize="2xs" color="text.muted" textTransform="uppercase" fontWeight="700">
+                        Active Courses
+                      </StatLabel>
+                      <StatNumber color="green.600" fontSize="2xl" mt={1}>
+                        {courses.length}
+                      </StatNumber>
+                      <StatHelpText fontSize="2xs" mb={0}>Registered Curriculum Tracks</StatHelpText>
+                    </Stat>
+                    <Flex align="center" justify="center" boxSize="36px" borderRadius="full" bg="green.50" color="green.500" flexShrink={0}>
+                      <CheckCircleIcon boxSize={4} />
+                    </Flex>
+                  </Flex>
                 </CardBody>
               </Card>
 
-              <Card borderWidth="1px" borderColor="#E2E8F0" shadow="sm">
+              <Card
+                borderWidth="1px"
+                borderColor="#E2E8F0"
+                borderTop="3px solid"
+                borderTopColor="purple.500"
+                shadow="sm"
+                borderRadius="lg"
+                transition="all 0.2s"
+                _hover={{ shadow: "md", transform: "translateY(-2px)" }}
+              >
                 <CardBody>
-                  <Stat>
-                    <StatLabel fontSize="2xs" color="text.muted" textTransform="uppercase" fontWeight="700">
-                      Regional Job Openings
-                    </StatLabel>
-                    <StatNumber color="purple.600" fontSize="2xl">
-                      {totalStateJobs}
-                    </StatNumber>
-                    <StatHelpText fontSize="2xs">Active in {institute.state}</StatHelpText>
-                  </Stat>
+                  <Flex justify="space-between" align="flex-start">
+                    <Stat>
+                      <StatLabel fontSize="2xs" color="text.muted" textTransform="uppercase" fontWeight="700">
+                        Regional Job Openings
+                      </StatLabel>
+                      <StatNumber color="purple.600" fontSize="2xl" mt={1}>
+                        {totalStateJobs}
+                      </StatNumber>
+                      <StatHelpText fontSize="2xs" mb={0}>Active in {institute.state}</StatHelpText>
+                    </Stat>
+                    <Flex align="center" justify="center" boxSize="36px" borderRadius="full" bg="purple.50" color="purple.500" flexShrink={0}>
+                      <ArrowUpIcon boxSize={4} />
+                    </Flex>
+                  </Flex>
                 </CardBody>
               </Card>
             </SimpleGrid>
 
             {recommendation && (
-              <Alert
-                status="info"
-                variant="left-accent"
-                borderRadius="md"
+              <Box
+                borderRadius="lg"
                 mb={2}
-                borderLeftColor="#FF6B00"
-                bg="orange.50"
+                p={4}
+                bgGradient="linear(to-r, orange.50, #fff8f2)"
                 borderWidth="1px"
                 borderColor="orange.200"
+                borderLeft="4px solid"
+                borderLeftColor="#FF6B00"
+                boxShadow="sm"
               >
-                <AlertIcon color="#FF6B00" />
-                <Box>
-                  <AlertTitle fontSize="sm" fontWeight="700" color="orange.900">
-                    Market-Curriculum Alignment Summary ({institute.state})
-                  </AlertTitle>
-                  <AlertDescription fontSize="xs" color="orange.800" mt={1}>
-                    {recommendation}
-                  </AlertDescription>
-                </Box>
-              </Alert>
+                <Flex gap={3} align="flex-start">
+                  <Flex align="center" justify="center" boxSize="32px" borderRadius="full" bg="orange.100" color="#FF6B00" flexShrink={0} mt={0.5}>
+                    <WarningIcon boxSize={3.5} />
+                  </Flex>
+                  <Box>
+                    <Heading fontSize="sm" fontWeight="700" color="orange.900">
+                      Market-Curriculum Alignment Summary ({institute.state})
+                    </Heading>
+                    <Text fontSize="xs" color="orange.800" mt={1} lineHeight="1.6">
+                      {recommendation}
+                    </Text>
+                  </Box>
+                </Flex>
+              </Box>
             )}
           </TabPanel>
 

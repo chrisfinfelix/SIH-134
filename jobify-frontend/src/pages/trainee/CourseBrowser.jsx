@@ -16,7 +16,6 @@ import {
   Tr,
   Th,
   Td,
-  Badge,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -27,8 +26,8 @@ import {
   useDisclosure,
   Divider,
 } from "@chakra-ui/react";
-import { SearchIcon, ChevronLeftIcon, ChevronRightIcon, InfoOutlineIcon } from "@chakra-ui/icons";
-import { useQuery } from "@tanstack/react-query";
+import { SearchIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import PageShell from "../../components/layout/PageShell";
 import StatusBadge from "../../components/shared/StatusBadge";
 import SkillTag from "../../components/shared/SkillTag";
@@ -75,7 +74,7 @@ const CourseBrowser = () => {
       const res = await api.get(`/courses?${params.toString()}`);
       return res.data;
     },
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   });
 
   // Extract list and pagination
@@ -83,7 +82,7 @@ const CourseBrowser = () => {
   const pagination = queryResult?.pagination || {
     total: courses.length,
     page: page,
-    totalPages: Math.ceil(courses.length / limit) || 1,
+    totalPages: 1,
   };
 
   const handleRowClick = (course) => {
@@ -184,6 +183,7 @@ const CourseBrowser = () => {
               <option value="Good">Good (Aligned)</option>
               <option value="Needs Update">Needs Update</option>
               <option value="Critical">Critical Gap</option>
+              <option value="unassessed">Not Yet Assessed</option>
             </Select>
           </Box>
         </SimpleGrid>
@@ -246,7 +246,7 @@ const CourseBrowser = () => {
                     {course.gapScore !== undefined ? course.gapScore : course.gap_score || "—"}
                   </Td>
                   <Td>
-                    <StatusBadge flag={course.flag || course.status || "Good"} />
+                    <StatusBadge flag={course.flag || "unassessed"} />
                   </Td>
                   <Td fontSize="xs" color="text.muted" maxW="150px" isTruncated>
                     {course.provider || "Government ITI"}
@@ -280,8 +280,8 @@ const CourseBrowser = () => {
               <Button
                 size="xs"
                 rightIcon={<ChevronRightIcon />}
-                onClick={() => setPage((p) => (pagination.totalPages ? Math.min(pagination.totalPages, p + 1) : p + 1))}
-                isDisabled={pagination.totalPages ? page >= pagination.totalPages : false || isFetching}
+                onClick={() => setPage((p) => Math.min(pagination.totalPages || 1, p + 1))}
+                isDisabled={page >= (pagination.totalPages || 1) || isFetching}
               >
                 Next
               </Button>
@@ -343,7 +343,7 @@ const CourseBrowser = () => {
                     <Text fontSize="2xs" color="text.muted" textTransform="uppercase">
                       Curriculum Status
                     </Text>
-                    <StatusBadge flag={selectedCourse.flag || "Good"} mt={0.5} />
+                    <StatusBadge flag={selectedCourse.flag || "unassessed"} mt={0.5} />
                   </Box>
                 </SimpleGrid>
 

@@ -1,0 +1,843 @@
+[
+  {
+    "canonical_name": "Python",
+    "sector": "IT",
+    "synonyms": [
+      "python3",
+      "Python programming",
+      "py"
+    ]
+  },
+  {
+    "canonical_name": "JavaScript",
+    "sector": "IT",
+    "synonyms": [
+      "JS",
+      "javascript programming",
+      "ECMAScript"
+    ]
+  },
+  {
+    "canonical_name": "TypeScript",
+    "sector": "IT",
+    "synonyms": [
+      "TS",
+      "typescript"
+    ]
+  },
+  {
+    "canonical_name": "React",
+    "sector": "IT",
+    "synonyms": [
+      "React.js",
+      "ReactJS"
+    ]
+  },
+  {
+    "canonical_name": "Node.js",
+    "sector": "IT",
+    "synonyms": [
+      "NodeJS",
+      "node"
+    ]
+  },
+  {
+    "canonical_name": "Java",
+    "sector": "IT",
+    "synonyms": [
+      "core java",
+      "java se"
+    ]
+  },
+  {
+    "canonical_name": "SQL",
+    "sector": "IT",
+    "synonyms": [
+      "structured query language",
+      "sql queries"
+    ]
+  },
+  {
+    "canonical_name": "MongoDB",
+    "sector": "IT",
+    "synonyms": [
+      "mongo db",
+      "mongo"
+    ]
+  },
+  {
+    "canonical_name": "PostgreSQL",
+    "sector": "IT",
+    "synonyms": [
+      "postgres",
+      "psql"
+    ]
+  },
+  {
+    "canonical_name": "AWS",
+    "sector": "IT",
+    "synonyms": [
+      "amazon web services",
+      "aws cloud"
+    ]
+  },
+  {
+    "canonical_name": "Azure",
+    "sector": "IT",
+    "synonyms": [
+      "microsoft azure",
+      "azure cloud"
+    ]
+  },
+  {
+    "canonical_name": "Docker",
+    "sector": "IT",
+    "synonyms": [
+      "containerization with docker",
+      "docker containers"
+    ]
+  },
+  {
+    "canonical_name": "Kubernetes",
+    "sector": "IT",
+    "synonyms": [
+      "k8s",
+      "kube"
+    ]
+  },
+  {
+    "canonical_name": "Machine Learning",
+    "sector": "IT",
+    "synonyms": [
+      "ML",
+      "machine-learning",
+      "applied ml"
+    ]
+  },
+  {
+    "canonical_name": "Deep Learning",
+    "sector": "IT",
+    "synonyms": [
+      "DL",
+      "neural networks"
+    ]
+  },
+  {
+    "canonical_name": "Natural Language Processing",
+    "sector": "IT",
+    "synonyms": [
+      "NLP",
+      "text processing"
+    ]
+  },
+  {
+    "canonical_name": "Data Analysis",
+    "sector": "IT",
+    "synonyms": [
+      "data analytics",
+      "analyzing data"
+    ]
+  },
+  {
+    "canonical_name": "Data Engineering",
+    "sector": "IT",
+    "synonyms": [
+      "data pipelines",
+      "etl engineering"
+    ]
+  },
+  {
+    "canonical_name": "DevOps",
+    "sector": "IT",
+    "synonyms": [
+      "dev ops",
+      "development operations"
+    ]
+  },
+  {
+    "canonical_name": "CI/CD",
+    "sector": "IT",
+    "synonyms": [
+      "continuous integration",
+      "continuous deployment"
+    ]
+  },
+  {
+    "canonical_name": "Git",
+    "sector": "IT",
+    "synonyms": [
+      "git version control",
+      "github"
+    ]
+  },
+  {
+    "canonical_name": "REST API Development",
+    "sector": "IT",
+    "synonyms": [
+      "rest apis",
+      "restful services"
+    ]
+  },
+  {
+    "canonical_name": "GraphQL",
+    "sector": "IT",
+    "synonyms": [
+      "graph ql"
+    ]
+  },
+  {
+    "canonical_name": "Cybersecurity",
+    "sector": "IT",
+    "synonyms": [
+      "cyber security",
+      "infosec"
+    ]
+  },
+  {
+    "canonical_name": "Network Administration",
+    "sector": "IT",
+    "synonyms": [
+      "networking",
+      "network admin"
+    ]
+  },
+  {
+    "canonical_name": "Linux Administration",
+    "sector": "IT",
+    "synonyms": [
+      "linux sysadmin",
+      "unix admin"
+    ]
+  },
+  {
+    "canonical_name": "C++",
+    "sector": "IT",
+    "synonyms": [
+      "cpp",
+      "c plus plus"
+    ]
+  },
+  {
+    "canonical_name": "C#",
+    "sector": "IT",
+    "synonyms": [
+      "c sharp",
+      "dotnet"
+    ]
+  },
+  {
+    "canonical_name": "Django",
+    "sector": "IT",
+    "synonyms": [
+      "django framework"
+    ]
+  },
+  {
+    "canonical_name": "Flask",
+    "sector": "IT",
+    "synonyms": [
+      "flask framework"
+    ]
+  },
+  {
+    "canonical_name": "FastAPI",
+    "sector": "IT",
+    "synonyms": [
+      "fast api"
+    ]
+  },
+  {
+    "canonical_name": "Spring Boot",
+    "sector": "IT",
+    "synonyms": [
+      "springboot",
+      "spring framework"
+    ]
+  },
+  {
+    "canonical_name": "Data Visualization",
+    "sector": "IT",
+    "synonyms": [
+      "dataviz",
+      "visualizing data"
+    ]
+  },
+  {
+    "canonical_name": "Power BI",
+    "sector": "IT",
+    "synonyms": [
+      "powerbi"
+    ]
+  },
+  {
+    "canonical_name": "Tableau",
+    "sector": "IT",
+    "synonyms": [
+      "tableau software"
+    ]
+  },
+  {
+    "canonical_name": "Excel",
+    "sector": "IT",
+    "synonyms": [
+      "ms excel",
+      "microsoft excel"
+    ]
+  },
+  {
+    "canonical_name": "Cloud Computing",
+    "sector": "IT",
+    "synonyms": [
+      "cloud infra",
+      "cloud platforms"
+    ]
+  },
+  {
+    "canonical_name": "Agile Methodology",
+    "sector": "IT",
+    "synonyms": [
+      "agile",
+      "scrum"
+    ]
+  },
+  {
+    "canonical_name": "Testing & QA",
+    "sector": "IT",
+    "synonyms": [
+      "software testing",
+      "quality assurance"
+    ]
+  },
+  {
+    "canonical_name": "Android Development",
+    "sector": "IT",
+    "synonyms": [
+      "android dev",
+      "android apps"
+    ]
+  },
+  {
+    "canonical_name": "iOS Development",
+    "sector": "IT",
+    "synonyms": [
+      "ios dev",
+      "swift development"
+    ]
+  },
+  {
+    "canonical_name": "Blockchain",
+    "sector": "IT",
+    "synonyms": [
+      "distributed ledger",
+      "web3"
+    ]
+  },
+  {
+    "canonical_name": "Computer Vision",
+    "sector": "IT",
+    "synonyms": [
+      "cv",
+      "image processing"
+    ]
+  },
+  {
+    "canonical_name": "Big Data",
+    "sector": "IT",
+    "synonyms": [
+      "hadoop",
+      "spark ecosystem"
+    ]
+  },
+  {
+    "canonical_name": "UI/UX Design",
+    "sector": "IT",
+    "synonyms": [
+      "ui design",
+      "ux design"
+    ]
+  },
+  {
+    "canonical_name": "CNC Machining",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "cnc operation",
+      "computer numerical control"
+    ]
+  },
+  {
+    "canonical_name": "Welding",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "arc welding",
+      "welding techniques"
+    ]
+  },
+  {
+    "canonical_name": "AutoCAD",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "auto cad",
+      "computer aided design"
+    ]
+  },
+  {
+    "canonical_name": "SolidWorks",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "solid works"
+    ]
+  },
+  {
+    "canonical_name": "Quality Control",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "qc",
+      "quality assurance manufacturing"
+    ]
+  },
+  {
+    "canonical_name": "Lean Manufacturing",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "lean production",
+      "lean six sigma"
+    ]
+  },
+  {
+    "canonical_name": "Six Sigma",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "6 sigma",
+      "six-sigma"
+    ]
+  },
+  {
+    "canonical_name": "Industrial Robotics",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "robotics",
+      "robotic automation"
+    ]
+  },
+  {
+    "canonical_name": "PLC Programming",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "programmable logic controllers",
+      "plc"
+    ]
+  },
+  {
+    "canonical_name": "Supply Chain Management",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "scm",
+      "supply chain"
+    ]
+  },
+  {
+    "canonical_name": "Inventory Management",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "stock management"
+    ]
+  },
+  {
+    "canonical_name": "Hydraulics",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "hydraulic systems"
+    ]
+  },
+  {
+    "canonical_name": "Pneumatics",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "pneumatic systems"
+    ]
+  },
+  {
+    "canonical_name": "Electrical Wiring",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "wiring",
+      "electrical installation"
+    ]
+  },
+  {
+    "canonical_name": "Machine Maintenance",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "equipment maintenance",
+      "preventive maintenance"
+    ]
+  },
+  {
+    "canonical_name": "3D Printing",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "additive manufacturing"
+    ]
+  },
+  {
+    "canonical_name": "Sheet Metal Fabrication",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "metal fabrication"
+    ]
+  },
+  {
+    "canonical_name": "Forklift Operation",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "forklift driving"
+    ]
+  },
+  {
+    "canonical_name": "Health & Safety Compliance",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "safety compliance",
+      "ehs"
+    ]
+  },
+  {
+    "canonical_name": "Injection Molding",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "plastic molding"
+    ]
+  },
+  {
+    "canonical_name": "Assembly Line Operations",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "assembly line work"
+    ]
+  },
+  {
+    "canonical_name": "ERP Systems (SAP)",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "sap",
+      "erp software"
+    ]
+  },
+  {
+    "canonical_name": "Tool & Die Making",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "tool and die"
+    ]
+  },
+  {
+    "canonical_name": "Metallurgy",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "metallurgical analysis"
+    ]
+  },
+  {
+    "canonical_name": "Production Planning",
+    "sector": "Manufacturing",
+    "synonyms": [
+      "production scheduling"
+    ]
+  },
+  {
+    "canonical_name": "Patient Care",
+    "sector": "Healthcare",
+    "synonyms": [
+      "patient management",
+      "bedside care"
+    ]
+  },
+  {
+    "canonical_name": "Nursing",
+    "sector": "Healthcare",
+    "synonyms": [
+      "clinical nursing",
+      "registered nursing"
+    ]
+  },
+  {
+    "canonical_name": "Medical Coding",
+    "sector": "Healthcare",
+    "synonyms": [
+      "icd coding",
+      "clinical coding"
+    ]
+  },
+  {
+    "canonical_name": "Phlebotomy",
+    "sector": "Healthcare",
+    "synonyms": [
+      "blood draw",
+      "venipuncture"
+    ]
+  },
+  {
+    "canonical_name": "Pharmacology",
+    "sector": "Healthcare",
+    "synonyms": [
+      "pharmacy knowledge"
+    ]
+  },
+  {
+    "canonical_name": "Electronic Health Records (EHR)",
+    "sector": "Healthcare",
+    "synonyms": [
+      "ehr systems",
+      "emr"
+    ]
+  },
+  {
+    "canonical_name": "Medical Billing",
+    "sector": "Healthcare",
+    "synonyms": [
+      "healthcare billing"
+    ]
+  },
+  {
+    "canonical_name": "First Aid & CPR",
+    "sector": "Healthcare",
+    "synonyms": [
+      "cpr certification",
+      "first aid"
+    ]
+  },
+  {
+    "canonical_name": "Radiology",
+    "sector": "Healthcare",
+    "synonyms": [
+      "radiologic technology",
+      "x-ray imaging"
+    ]
+  },
+  {
+    "canonical_name": "Physiotherapy",
+    "sector": "Healthcare",
+    "synonyms": [
+      "physical therapy"
+    ]
+  },
+  {
+    "canonical_name": "Clinical Research",
+    "sector": "Healthcare",
+    "synonyms": [
+      "clinical trials"
+    ]
+  },
+  {
+    "canonical_name": "Medical Laboratory Technology",
+    "sector": "Healthcare",
+    "synonyms": [
+      "lab technology",
+      "medical lab tech"
+    ]
+  },
+  {
+    "canonical_name": "Infection Control",
+    "sector": "Healthcare",
+    "synonyms": [
+      "infection prevention"
+    ]
+  },
+  {
+    "canonical_name": "Surgical Assistance",
+    "sector": "Healthcare",
+    "synonyms": [
+      "operating room assistance"
+    ]
+  },
+  {
+    "canonical_name": "Anatomy & Physiology",
+    "sector": "Healthcare",
+    "synonyms": [
+      "human anatomy"
+    ]
+  },
+  {
+    "canonical_name": "Telemedicine",
+    "sector": "Healthcare",
+    "synonyms": [
+      "telehealth"
+    ]
+  },
+  {
+    "canonical_name": "Healthcare Management",
+    "sector": "Healthcare",
+    "synonyms": [
+      "hospital administration"
+    ]
+  },
+  {
+    "canonical_name": "Mental Health Counseling",
+    "sector": "Healthcare",
+    "synonyms": [
+      "psychological counseling"
+    ]
+  },
+  {
+    "canonical_name": "Dietetics & Nutrition",
+    "sector": "Healthcare",
+    "synonyms": [
+      "nutrition counseling"
+    ]
+  },
+  {
+    "canonical_name": "Emergency Medical Services",
+    "sector": "Healthcare",
+    "synonyms": [
+      "ems",
+      "paramedic skills"
+    ]
+  },
+  {
+    "canonical_name": "Point of Sale (POS) Systems",
+    "sector": "Retail",
+    "synonyms": [
+      "pos systems",
+      "billing software"
+    ]
+  },
+  {
+    "canonical_name": "Customer Service",
+    "sector": "Retail",
+    "synonyms": [
+      "customer support",
+      "client service"
+    ]
+  },
+  {
+    "canonical_name": "Visual Merchandising",
+    "sector": "Retail",
+    "synonyms": [
+      "merchandising",
+      "store display"
+    ]
+  },
+  {
+    "canonical_name": "Inventory Auditing",
+    "sector": "Retail",
+    "synonyms": [
+      "stock auditing"
+    ]
+  },
+  {
+    "canonical_name": "Retail Sales",
+    "sector": "Retail",
+    "synonyms": [
+      "sales associate skills"
+    ]
+  },
+  {
+    "canonical_name": "E-commerce Management",
+    "sector": "Retail",
+    "synonyms": [
+      "ecommerce",
+      "online retail"
+    ]
+  },
+  {
+    "canonical_name": "Digital Marketing",
+    "sector": "Retail",
+    "synonyms": [
+      "online marketing"
+    ]
+  },
+  {
+    "canonical_name": "Social Media Marketing",
+    "sector": "Retail",
+    "synonyms": [
+      "smm",
+      "social media management"
+    ]
+  },
+  {
+    "canonical_name": "CRM Software",
+    "sector": "Retail",
+    "synonyms": [
+      "customer relationship management"
+    ]
+  },
+  {
+    "canonical_name": "Cash Handling",
+    "sector": "Retail",
+    "synonyms": [
+      "cash management"
+    ]
+  },
+  {
+    "canonical_name": "Loss Prevention",
+    "sector": "Retail",
+    "synonyms": [
+      "shrinkage control"
+    ]
+  },
+  {
+    "canonical_name": "Warehouse Operations",
+    "sector": "Retail",
+    "synonyms": [
+      "warehousing"
+    ]
+  },
+  {
+    "canonical_name": "Negotiation Skills",
+    "sector": "Retail",
+    "synonyms": [
+      "vendor negotiation"
+    ]
+  },
+  {
+    "canonical_name": "Team Leadership",
+    "sector": "Retail",
+    "synonyms": [
+      "team management",
+      "people management"
+    ]
+  },
+  {
+    "canonical_name": "Order Fulfillment",
+    "sector": "Retail",
+    "synonyms": [
+      "order processing"
+    ]
+  },
+  {
+    "canonical_name": "Product Merchandising",
+    "sector": "Retail",
+    "synonyms": [
+      "product placement"
+    ]
+  },
+  {
+    "canonical_name": "SEO",
+    "sector": "Retail",
+    "synonyms": [
+      "search engine optimization"
+    ]
+  },
+  {
+    "canonical_name": "Email Marketing",
+    "sector": "Retail",
+    "synonyms": [
+      "email campaigns"
+    ]
+  },
+  {
+    "canonical_name": "Bookkeeping",
+    "sector": "Retail",
+    "synonyms": [
+      "basic accounting"
+    ]
+  },
+  {
+    "canonical_name": "Communication Skills",
+    "sector": "Retail",
+    "synonyms": [
+      "verbal communication",
+      "written communication"
+    ]
+  }
+]

@@ -4,7 +4,6 @@ import {
   Heading,
   Text,
   Flex,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import {
   ResponsiveContainer,
@@ -102,7 +101,7 @@ const SkillDemandBar = ({
             <BarChart
               data={chartData}
               layout="vertical"
-              margin={{ top: 10, right: 30, left: 70, bottom: 10 }}
+              margin={{ top: 10, right: 24, left: 8, bottom: 10 }}
             >
               <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
               <XAxis
@@ -110,7 +109,7 @@ const SkillDemandBar = ({
                 fontSize={11}
                 tickLine={false}
                 axisLine={{ stroke: "#E2E8F0" }}
-                tickFormatter={(val) => `${val}`}
+                allowDecimals={false}
               />
               <YAxis
                 type="category"
@@ -118,9 +117,11 @@ const SkillDemandBar = ({
                 fontSize={11}
                 tickLine={false}
                 axisLine={{ stroke: "#E2E8F0" }}
-                width={85}
+                width={120}
+                tick={{ fill: "#4A5568" }}
+                interval={0}
               />
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,53,128,0.06)" }} />
               <Bar dataKey="jobCount" radius={[0, 4, 4, 0]} maxBarSize={20}>
                 {chartData.map((entry, index) => (
                   <Cell

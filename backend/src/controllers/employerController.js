@@ -3,6 +3,7 @@ const EmployerDemandSignal = require("../models/EmployerDemandSignal");
 const Course = require("../models/Course");
 const EmployerFeedback = require("../models/EmployerFeedback");
 const Job = require("../models/Job");
+const { withExtractedSkills } = require("../services/aiService");
 
 // POST /api/employer/validate
 const validateCourse = async (req, res, next) => {
@@ -69,13 +70,14 @@ const getValidations = async (req, res, next) => {
 // POST /api/employer/demand-signal
 const createDemandSignal = async (req, res, next) => {
   try {
-    const { company, sector, district, skills, targetRoles, hiringCount, notes } = req.body;
+    const { company, sector, district, state, skills, targetRoles, hiringCount, notes } = req.body;
 
     const signal = await EmployerDemandSignal.create({
       employerId: req.user.userId,
       company: company || "",
       sector: sector || "",
       district: district || "",
+      state: state || "",
       skills: skills || [],
       targetRoles: targetRoles || [],
       hiringCount: hiringCount || 0,
@@ -107,19 +109,21 @@ const createJobPosting = async (req, res, next) => {
       return res.status(400).json({ success: false, message: "title and company are required" });
     }
 
-    const job = await Job.create({
-      employerId: req.user.userId,
-      title,
-      company,
-      district: district || "",
-      state: state || "",
-      skills: skills || [],
-      proficiencyLevel: proficiencyLevel || "",
-      salaryRange: salaryRange || "",
-      description: description || "",
-      source: "employer_portal",
-      postedDate: new Date(),
-    });
+    const job = await Job.create(
+      await withExtractedSkills({
+        employerId: req.user.userId,
+        title,
+        company,
+        district: district || "",
+        state: state || "",
+        skills: Array.isArray(skills) ? skills : [],
+        proficiencyLevel: proficiencyLevel || "",
+        salaryRange: salaryRange || "",
+        description: description || "",
+        source: "employer_portal",
+        postedDate: new Date(),
+      })
+    );
 
     res.status(201).json({ success: true, data: job });
   } catch (error) {

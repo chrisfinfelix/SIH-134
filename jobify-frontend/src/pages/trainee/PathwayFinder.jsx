@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Heading,
@@ -28,16 +28,15 @@ import {
   TagCloseButton,
   ButtonGroup,
   Card,
+  Alert,
+  AlertIcon,
   CardBody,
 } from "@chakra-ui/react";
 import {
   SearchIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  CheckIcon,
-  WarningIcon,
   StarIcon,
-  InfoOutlineIcon,
   AddIcon,
 } from "@chakra-ui/icons";
 import { useSearchParams } from "react-router-dom";
@@ -200,6 +199,93 @@ const CourseRow = ({ course }) => {
   );
 };
 
+// Personalised PageRank over the occupation/skill co-occurrence graph (ML service)
+const CareerGraphCard = ({ skills }) => {
+  const [focus, setFocus] = useState(skills[0]);
+  const [userPicked, setUserPicked] = useState(false);
+  const activeFocus = skills.includes(focus) ? focus : skills[0];
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["insights", "career-path", activeFocus],
+    queryFn: async () => (await api.get(`/insights/career-path/${encodeURIComponent(activeFocus)}`)).data.data,
+    enabled: !!activeFocus,
+    staleTime: 10 * 60 * 1000,
+    retry: false,
+  });
+
+  const steps = data?.next_steps || [];
+
+  // Until the user chooses, skip past skills the taxonomy doesn't know (e.g. "HTML")
+  const focusIndex = skills.indexOf(activeFocus);
+  if (!userPicked && data && steps.length === 0 && focusIndex < skills.length - 1) {
+    setFocus(skills[focusIndex + 1]);
+  }
+  const roles = steps.filter((s) => s.node_type === "role");
+  const pairedSkills = steps.filter((s) => s.node_type === "skill");
+
+  return (
+    <Card borderWidth="1px" borderColor="#E2E8F0" shadow="sm" mb={6}>
+      <CardBody>
+        <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} gap={2} mb={3}>
+          <Box>
+            <HStack spacing={2}>
+              <Badge colorScheme="purple" variant="solid" fontSize="2xs">AI</Badge>
+              <Heading size="xs" textTransform="uppercase" color="brand.500">Career Graph — where your skills lead</Heading>
+            </HStack>
+            <Text fontSize="xs" color="text.muted" mt={1}>
+              Personalised PageRank over the skill–occupation graph
+              {data?.resolved_node && data.resolved_node !== activeFocus ? ` (matched "${activeFocus}" to ${data.resolved_node})` : ""}. Pick one of your skills:
+            </Text>
+          </Box>
+        </Flex>
+        <Flex wrap="wrap" gap={1.5} mb={4}>
+          {skills.map((s) => (
+            <Button
+              key={s}
+              size="xs"
+              borderRadius="full"
+              variant={s === activeFocus ? "solid" : "outline"}
+              colorScheme={s === activeFocus ? "brand" : "gray"}
+              onClick={() => {
+                setUserPicked(true);
+                setFocus(s);
+              }}
+            >
+              {s}
+            </Button>
+          ))}
+        </Flex>
+        {isLoading && <Text fontSize="xs" color="text.muted">Walking the skill graph…</Text>}
+        {isError && <Text fontSize="xs" color="text.muted">AI career graph is unavailable right now.</Text>}
+        {data && steps.length === 0 && (
+          <Text fontSize="xs" color="text.muted">
+            &quot;{activeFocus}&quot; isn&apos;t in the skill taxonomy yet, so no graph neighbours were found.
+          </Text>
+        )}
+        {steps.length > 0 && (
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+            <Box>
+              <Text fontSize="2xs" fontWeight="700" color="text.secondary" mb={2}>ROLES THIS SKILL LEADS TO</Text>
+              <Flex wrap="wrap" gap={1.5}>
+                {roles.length ? roles.map((r) => (
+                  <Badge key={r.node} colorScheme="green" variant="subtle" px={2} py={0.5} textTransform="none" fontSize="xs">{r.node}</Badge>
+                )) : <Text fontSize="xs" color="text.muted">No direct role links.</Text>}
+              </Flex>
+            </Box>
+            <Box>
+              <Text fontSize="2xs" fontWeight="700" color="text.secondary" mb={2}>SKILLS TO LEARN NEXT (COMMONLY PAIRED)</Text>
+              <Flex wrap="wrap" gap={1.5}>
+                {pairedSkills.length ? pairedSkills.map((p) => (
+                  <Badge key={p.node} colorScheme="blue" variant="subtle" px={2} py={0.5} textTransform="none" fontSize="xs">{p.node}</Badge>
+                )) : <Text fontSize="xs" color="text.muted">No paired skills.</Text>}
+              </Flex>
+            </Box>
+          </SimpleGrid>
+        )}
+      </CardBody>
+    </Card>
+  );
+};
+
 const PathwayFinder = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
@@ -211,7 +297,7 @@ const PathwayFinder = () => {
   const [primaryState, setPrimaryState] = useState(user?.primaryState || "Kerala");
   const [preferredStates, setPreferredStates] = useState(user?.preferredStates || ["Karnataka", "Tamil Nadu"]);
   const [deliveryMode, setDeliveryMode] = useState(user?.preferredDeliveryMode || "All");
-  const [skills, setSkills] = useState(user?.skills || ["React", "JavaScript", "HTML"]);
+  const [skills, setSkills] = useState(user?.skills || []);
   const [newSkillInput, setNewSkillInput] = useState("");
 
   // Fetch Trainee Preferences if logged in
@@ -375,7 +461,7 @@ const PathwayFinder = () => {
             {/* Quick Suggestions */}
             <HStack spacing={2} mt={2} wrap="wrap" fontSize="xs">
               <Text fontSize="2xs" color="text.muted" fontWeight="600">Quick Roles:</Text>
-              {["Full Stack Developer", "Data Analyst", "Cloud Engineer", "Electrician", "DevOps Engineer"].map((r) => (
+              {["Full Stack Developer", "Data Analyst", "Cloud Engineer", "Data Scientist", "DevOps Engineer"].map((r) => (
                 <Button
                   key={r}
                   size="xs"
@@ -631,6 +717,23 @@ const PathwayFinder = () => {
         </SimpleGrid>
       )}
 
+      {pathwayData && requiredSkills.length === 0 && (
+        <Alert status="info" borderRadius="md" mb={6} fontSize="sm">
+          <AlertIcon />
+          No job postings or occupation data describe the skills for "{pathwayData.targetRole}" yet. Try a related title
+          (e.g. "Data Analyst" or "Cloud Engineer").
+        </Alert>
+      )}
+      {pathwayData?.requiredSkillsSource === "ml_occupation_taxonomy" && pathwayData.mappedOccupation && (
+        <Alert status="info" variant="left-accent" borderRadius="md" mb={6} fontSize="xs">
+          <AlertIcon />
+          No local postings matched this title, so required skills come from the AI occupation classifier, which mapped it to{" "}
+          <strong>&nbsp;{pathwayData.mappedOccupation.occupation_title}</strong>&nbsp;({pathwayData.mappedOccupation.occupation_code}).
+        </Alert>
+      )}
+
+      {skills.length > 0 && <CareerGraphCard skills={skills} />}
+
       {/* ── Recommended Courses Table ────────────────────────────── */}
       {isLoading ? (
         <LoadingSpinner message="Querying regional course registry and calculating multi-state delivery options..." />
@@ -650,7 +753,7 @@ const PathwayFinder = () => {
                   Recommended Courses & Training Centers ({courses.length} Options)
                 </Heading>
                 <Text fontSize="xs" color="text.muted">
-                  Filtered for {primaryState} & {preferredStates.join(", ")} | Delivery: {deliveryMode}
+                  Filtered for {[primaryState, ...preferredStates].filter(Boolean).join(", ") || "all states"} · Delivery: {deliveryMode}
                 </Text>
               </Box>
             </Flex>

@@ -1,30 +1,26 @@
 const Job = require("../models/Job");
+const { containsRegex } = require("../utils/escapeRegex");
+const { parsePagination, buildPagination } = require("../utils/pagination");
+const { withExtractedSkills } = require("../services/aiService");
 
 // GET /api/jobs
 const getJobs = async (req, res, next) => {
   try {
-    const { district, state, skill, role, page = 1, limit = 20 } = req.query;
+    const { district, state, skill, role } = req.query;
+    const { page, limit, skip } = parsePagination(req.query);
 
     const filter = {};
-    if (district) filter.district = new RegExp(district, "i");
-    if (state) filter.state = new RegExp(state, "i");
-    if (skill) filter.skills = { $in: [new RegExp(skill, "i")] };
-    if (role) filter.title = new RegExp(role, "i");
+    if (district) filter.district = containsRegex(district);
+    if (state) filter.state = containsRegex(state);
+    if (skill) filter.skills = { $in: [containsRegex(skill)] };
+    if (role) filter.title = containsRegex(role);
 
-    const skip = (Number(page) - 1) * Number(limit);
-    const total = await Job.countDocuments(filter);
-    const jobs = await Job.find(filter).skip(skip).limit(Number(limit)).sort({ postedDate: -1 });
+    const [total, jobs] = await Promise.all([
+      Job.countDocuments(filter),
+      Job.find(filter).skip(skip).limit(limit).sort({ postedDate: -1 }),
+    ]);
 
-    res.json({
-      success: true,
-      data: jobs,
-      pagination: {
-        page: Number(page),
-        limit: Number(limit),
-        total,
-        pages: Math.ceil(total / Number(limit)),
-      },
-    });
+    res.json({ success: true, data: jobs, pagination: buildPagination(page, limit, total) });
   } catch (error) {
     next(error);
   }
@@ -46,7 +42,7 @@ const getJobById = async (req, res, next) => {
 // POST /api/jobs  (admin only)
 const createJob = async (req, res, next) => {
   try {
-    const job = await Job.create(req.body);
+    const job = await Job.create(await withExtractedSkills(req.body));
     res.status(201).json({ success: true, data: job });
   } catch (error) {
     next(error);
@@ -68,6 +64,7 @@ const bulkCreateJobs = async (req, res, next) => {
       company: j.company || "",
       district: j.district || "",
       state: j.state || "",
+      sector: j.sector || "",
       skills: j.skills || [],
       proficiencyLevel: j.proficiency_level || j.proficiencyLevel || "",
       source: j.source || "",

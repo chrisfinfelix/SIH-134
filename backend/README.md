@@ -122,13 +122,36 @@ This will:
 - Insert 5 district plans, 5 placement outcomes
 - Create a default admin account
 
-**Default admin credentials (development only):**
-```
-Email:    admin@sih26134.dev
-Password: Admin@1234
+Then enrich it with institutes, demo employer/trainee accounts and demand signals:
+
+```bash
+node scripts/seed_institutes_and_states.js
 ```
 
-> ⚠️ Change the admin password before any real deployment.
+**Demo credentials (development only):**
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@jobify.gov.in | Admin@123 |
+| Employer | employer@techcorp.in | Employer@123 |
+| Trainee | trainee@domain.in | Trainee@123 |
+| Institute | institute@kitas.kerala.gov.in (and 3 others) | Institute@123 |
+
+> ⚠️ `npm run seed` **deletes** jobs, courses, skills and related collections. Never point it at the production `MONGODB_URI`.
+> Change the admin password before any real deployment. Admin accounts can only be created by the seed script — `POST /api/auth/register` ignores `role: "admin"`.
+
+---
+
+## Smoke Tests
+
+With a local, seeded database and the server running:
+
+```bash
+npm run test:smoke                          # BASE_URL defaults to http://localhost:5000/api
+BASE_URL=http://localhost:5055/api npm run test:smoke
+```
+
+Covers regex-safe search, admin self-registration, case-insensitive login, pagination, institute ownership checks and the AI proxy (skipped automatically if ml-service is down).
 
 ---
 
@@ -149,6 +172,9 @@ Get a token by calling `POST /api/auth/login`.
 | `admin` | Full access including admin endpoints |
 | `employer` | Employer endpoints (validate, demand signal) |
 | `trainee` | Public endpoints + trainee pathway |
+| `institute` | Own institute profile, courses, notifications, feedback |
+
+Login and register are rate-limited to 30 requests per IP per 15 minutes.
 
 ---
 
@@ -180,6 +206,21 @@ Get a token by calling `POST /api/auth/login`.
 | GET | /api/admin/skill-demand | Yes | admin | Top skill demand |
 | GET | /api/admin/district-summary | Yes | admin | District job/course counts |
 | GET | /api/admin/recommendations | Yes | admin | Courses needing updates |
+| GET | /api/public/stats | No | - | Aggregate counts for the landing page |
+| GET | /api/insights/status | Yes | Any | Is the ML service reachable? |
+| GET | /api/insights/options | Yes | Any | Valid ML inputs (roles, skills, districts, courses) |
+| GET | /api/insights/career-path/:node | Yes | Any | Skill-graph next steps (PageRank) |
+| POST | /api/insights/skill-gap | Yes | Any | Bi-encoder + cross-encoder skill gap |
+| POST | /api/insights/extract-skills | Yes | Any | NER skill extraction from free text |
+| POST | /api/insights/classify-title | Yes | Any | Job title → NCO occupation code |
+| POST | /api/insights/standardize-skill | Yes | Any | Raw skill → canonical skill |
+| GET | /api/insights/forecast | Yes | admin, institute, employer | 6-month demand forecast + history |
+| GET | /api/insights/trends | Yes | admin, institute, employer | BERTopic emerging skill topics |
+| GET | /api/insights/curriculum | Yes | admin, institute | LambdaRank course ranking for a role |
+| GET | /api/insights/oversupply/:courseId | Yes | admin, institute | Oversupply probability + SHAP reasons |
+| POST | /api/insights/district-plan | Yes | admin | LP-optimised district training plan |
+
+List endpoints (`/api/jobs`, `/api/courses`) return `pagination: { page, limit, total, totalPages }` (limit capped at 100). `/api/courses?flag=unassessed` lists courses with no gap score yet.
 
 ---
 
@@ -283,9 +324,13 @@ The Python ML team runs a FastAPI service separately. This backend is prepared t
 
 **How it works:**
 
-`src/services/aiService.js` exports `analyzeJobDescription(description)`.
+The service lives in `../ml-service` (see its README). The backend uses it in three ways:
 
-It calls:
+1. **Automatic skill extraction** — when a job is created (admin, employer or institute) with a description but no skills, `withExtractedSkills()` fills `skills` from the NER model.
+2. **Role fallback** — `/api/trainee/pathways` asks the occupation classifier + skill graph for a role's skills when no local job postings match it (accepted only at ≥30% confidence).
+3. **`/api/insights/*` proxy** — the browser never talks to the ML service directly; the backend validates input, enforces roles and forwards the call.
+
+`analyzeJobDescription(description)` calls:
 ```
 POST http://localhost:8000/analyze-job
 { "description": "Looking for React and Node.js developer" }
@@ -296,7 +341,7 @@ Expected response from FastAPI:
 { "skills": ["React", "Node.js"] }
 ```
 
-If the AI service is offline, the backend continues working normally (returns empty skill array).
+If the AI service is offline, core features keep working: skill extraction returns an empty array, and `/api/insights/*` returns `503` with a clear message.
 
 Set `AI_SERVICE_URL` in `.env` to point to the FastAPI service URL.
 

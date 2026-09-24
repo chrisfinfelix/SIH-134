@@ -11,15 +11,17 @@ const register = async (req, res, next) => {
       return res.status(400).json({ success: false, message: errors.array()[0].msg });
     }
 
-    const { name, email, password, role, organization } = req.body;
+    const { name, password, role, organization } = req.body;
+    const email = String(req.body.email).trim().toLowerCase();
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ success: false, message: "Email already registered" });
     }
 
-    const allowedRoles = ["admin", "employer", "trainee", "institute"];
-    const userRole = allowedRoles.includes(role) ? role : "trainee";
+    // Admin accounts are provisioned via the seed script only, never self-registered.
+    const selfServiceRoles = ["employer", "trainee", "institute"];
+    const userRole = selfServiceRoles.includes(role) ? role : "trainee";
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
@@ -54,7 +56,8 @@ const login = async (req, res, next) => {
       return res.status(400).json({ success: false, message: errors.array()[0].msg });
     }
 
-    const { email, password } = req.body;
+    const { password } = req.body;
+    const email = String(req.body.email).trim().toLowerCase();
 
     const user = await User.findOne({ email }).select("+passwordHash");
     if (!user) {

@@ -23,6 +23,7 @@ import {
 import { AddIcon, StarIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import PageShell from "../../components/layout/PageShell";
+import AISkillDetectButton from "../../components/shared/AISkillDetectButton";
 import SkillTag from "../../components/shared/SkillTag";
 import LoadingSpinner from "../../components/shared/LoadingSpinner";
 import EmptyState from "../../components/shared/EmptyState";
@@ -248,8 +249,28 @@ const PostJobs = () => {
 
           <FormControl mb={4}>
             <FormLabel fontSize="xs" fontWeight="700" color="text.secondary">
-              Required Skills
+              Job Description
             </FormLabel>
+            <Textarea
+              size="sm"
+              rows={3}
+              placeholder="Role responsibilities, tools used, eligibility, shift details — AI can pull skills from this"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </FormControl>
+
+          <FormControl mb={4}>
+            <Flex justify="space-between" align="center" mb={1} gap={2} wrap="wrap">
+              <FormLabel fontSize="xs" fontWeight="700" color="text.secondary" mb={0}>
+                Required Skills
+              </FormLabel>
+              <AISkillDetectButton
+                text={description}
+                existingSkills={skillsList}
+                onDetected={(found) => setSkillsList((prev) => [...prev, ...found])}
+              />
+            </Flex>
             <Flex gap={2} mb={2}>
               <Input
                 size="sm"
@@ -285,19 +306,6 @@ const PostJobs = () => {
                 )}
               </Flex>
             </Box>
-          </FormControl>
-
-          <FormControl mb={4}>
-            <FormLabel fontSize="xs" fontWeight="700" color="text.secondary">
-              Job Description
-            </FormLabel>
-            <Textarea
-              size="sm"
-              rows={3}
-              placeholder="Role responsibilities, eligibility, shift details..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
           </FormControl>
 
           <Flex justify="flex-end">

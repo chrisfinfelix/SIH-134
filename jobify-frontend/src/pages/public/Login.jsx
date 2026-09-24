@@ -11,7 +11,6 @@ import {
   Heading,
   Text,
   HStack,
-  Badge,
   useToast,
   Link,
   InputGroup,
@@ -19,10 +18,17 @@ import {
   IconButton,
   Divider
 } from "@chakra-ui/react";
-import { ViewIcon, ViewOffIcon, LockIcon } from "@chakra-ui/icons";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../../components/layout/Navbar";
 import { useAuth } from "../../context/AuthContext";
+
+const DEMO_ACCOUNTS = [
+  ["Admin", "admin@jobify.gov.in"],
+  ["Employer", "employer@techcorp.in"],
+  ["Trainee", "trainee@domain.in"],
+  ["Institute", "institute@kitas.kerala.gov.in"],
+];
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -195,14 +201,32 @@ const Login = () => {
             </VStack>
           </form>
 
-          <Box mt={6} p={3} bg="#F8FAFC" borderRadius="md" border="1px solid #E2E8F0" fontSize="2xs" color="text.muted">
-            <Text fontWeight="700" color="brand.500" mb={1}>
-              TEST ACCOUNTS (IF PRE-SEEDED):
+          <Box mt={6} p={3} bg="#F8FAFC" borderRadius="md" border="1px solid #E2E8F0" fontSize="xs" color="text.muted">
+            <Text fontWeight="700" color="brand.500" mb={1.5} fontSize="2xs" letterSpacing="wide">
+              DEMO ACCOUNTS — CLICK TO FILL EMAIL
             </Text>
-            <Text>Admin: admin@jobify.gov.in (or register new)</Text>
-            <Text>Employer: employer@techcorp.in</Text>
-            <Text>Trainee: trainee@domain.in</Text>
-            <Text>Institute: institute@kitas.kerala.gov.in</Text>
+            <VStack align="stretch" spacing={0.5}>
+              {DEMO_ACCOUNTS.map(([label, demoEmail]) => (
+                <HStack
+                  key={demoEmail}
+                  as="button"
+                  type="button"
+                  onClick={() => {
+                    setEmail(demoEmail);
+                    setErrors({});
+                  }}
+                  justify="space-between"
+                  px={2}
+                  py={1}
+                  borderRadius="sm"
+                  _hover={{ bg: "brand.50", color: "brand.600" }}
+                  textAlign="left"
+                >
+                  <Text fontWeight="600" minW="64px">{label}</Text>
+                  <Text noOfLines={1}>{demoEmail}</Text>
+                </HStack>
+              ))}
+            </VStack>
           </Box>
 
           <Divider my={5} borderColor="#E2E8F0" />

@@ -6,7 +6,6 @@ import {
   SimpleGrid,
   Button,
   HStack,
-  VStack,
   Flex,
   Icon,
   Badge,
@@ -14,9 +13,10 @@ import {
 import {
   CheckCircleIcon,
   AddIcon,
+  AttachmentIcon,
+  SunIcon,
   ArrowForwardIcon,
   StarIcon,
-  SearchIcon,
 } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -24,6 +24,53 @@ import PageShell from "../../components/layout/PageShell";
 import StatCard from "../../components/shared/StatCard";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../api/axios";
+
+const EMPLOYER_ACTIONS = [
+  {
+    title: "Validate Vocational Courses",
+    tagline: "Audit and rate curriculum modules against job market standards",
+    description:
+      "Review national course syllabi and certify whether the taught skills meet modern operational standards or require immediate modernisation.",
+    to: "/employer/validate",
+    cta: "Open Course Validator",
+    icon: CheckCircleIcon,
+    color: "#003580",
+    tint: "#e6eef8",
+  },
+  {
+    title: "Broadcast Demand Signals",
+    tagline: "Publish district-wise hiring targets and skill requirements",
+    description:
+      "Notify state training boards of upcoming hiring drives, target skill sets, and required headcounts across Indian industrial clusters.",
+    to: "/employer/demand-signals",
+    cta: "Post Hiring Signal",
+    icon: AddIcon,
+    color: "#E66000",
+    tint: "#fff0e5",
+  },
+  {
+    title: "Post Job Openings",
+    tagline: "Publish vacancies straight into trainees' Job Finder",
+    description:
+      "Describe the role in plain language and let the AI extract the required skills, so trainees see an accurate match score instantly.",
+    to: "/employer/post-jobs",
+    cta: "Post a Job",
+    icon: AttachmentIcon,
+    color: "#1A7F4B",
+    tint: "#eaf6ef",
+  },
+  {
+    title: "AI Market Intelligence",
+    tagline: "Forecast demand and spot emerging skills",
+    description:
+      "See 6-month demand forecasts per occupation and district, and which skill clusters are growing fastest in job postings.",
+    to: "/insights",
+    cta: "Open AI Insights",
+    icon: SunIcon,
+    color: "#6B46C1",
+    tint: "#f0e9fa",
+  },
+];
 
 const EmployerDashboard = () => {
   const { user } = useAuth();
@@ -146,93 +193,48 @@ const EmployerDashboard = () => {
 
       {/* Quick Action Navigation Panels */}
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-        <Box
-          bg="white"
-          p={6}
-          borderRadius="md"
-          borderWidth="1px"
-          borderColor="#E2E8F0"
-          boxShadow="sm"
-        >
-          <Flex align="center" gap={3} mb={3}>
-            <Flex
-              w={10}
-              h={10}
-              borderRadius="md"
-              bg="#eaf6ef"
-              color="govSuccess.500"
-              align="center"
-              justify="center"
-            >
-              <Icon as={CheckCircleIcon} boxSize={5} />
-            </Flex>
-            <Box>
-              <Heading as="h3" size="sm" fontWeight="700" color="text.primary">
-                Validate Vocational Courses
-              </Heading>
-              <Text fontSize="xs" color="text.muted">
-                Audit and rate curriculum modules against job market standards
-              </Text>
-            </Box>
-          </Flex>
-          <Text fontSize="sm" color="text.secondary" mb={4}>
-            Review national course syllabi and certify whether the taught skills meet modern operational standards or require immediate modernization.
-          </Text>
-          <Button
-            as={RouterLink}
-            to="/employer/validate"
-            colorScheme="brand"
-            size="sm"
-            rightIcon={<ArrowForwardIcon />}
+        {EMPLOYER_ACTIONS.map((action) => (
+          <Flex
+            key={action.to}
+            direction="column"
+            bg="white"
+            p={6}
+            borderRadius="md"
+            borderWidth="1px"
+            borderColor="#E2E8F0"
+            boxShadow="sm"
           >
-            Open Course Validator
-          </Button>
-        </Box>
-
-        <Box
-          bg="white"
-          p={6}
-          borderRadius="md"
-          borderWidth="1px"
-          borderColor="#E2E8F0"
-          boxShadow="sm"
-        >
-          <Flex align="center" gap={3} mb={3}>
-            <Flex
-              w={10}
-              h={10}
-              borderRadius="md"
-              bg="#fff0e5"
-              color="#FF6B00"
-              align="center"
-              justify="center"
-            >
-              <Icon as={AddIcon} boxSize={5} />
+            <Flex align="center" gap={3} mb={3}>
+              <Flex w={10} h={10} flexShrink={0} borderRadius="md" bg={action.tint} color={action.color} align="center" justify="center">
+                <Icon as={action.icon} boxSize={5} />
+              </Flex>
+              <Box>
+                <Heading as="h3" size="sm" fontWeight="700" color="text.primary">
+                  {action.title}
+                </Heading>
+                <Text fontSize="xs" color="text.muted">
+                  {action.tagline}
+                </Text>
+              </Box>
             </Flex>
-            <Box>
-              <Heading as="h3" size="sm" fontWeight="700" color="text.primary">
-                Broadcast Demand Signals
-              </Heading>
-              <Text fontSize="xs" color="text.muted">
-                Publish district-wise hiring targets and skill requirements
-              </Text>
-            </Box>
+            <Text fontSize="sm" color="text.secondary" mb={4}>
+              {action.description}
+            </Text>
+            <Button
+              as={RouterLink}
+              to={action.to}
+              bg={action.color}
+              color="white"
+              _hover={{ opacity: 0.9 }}
+              size="sm"
+              rightIcon={<ArrowForwardIcon />}
+              mt="auto"
+              alignSelf="flex-start"
+            >
+              {action.cta}
+            </Button>
           </Flex>
-          <Text fontSize="sm" color="text.secondary" mb={4}>
-            Notify state training boards of upcoming hiring drives, target skill sets, and required headcounts across Indian industrial clusters.
-          </Text>
-          <Button
-            as={RouterLink}
-            to="/employer/demand-signals"
-            bg="#FF6B00"
-            color="white"
-            _hover={{ bg: "#e66000" }}
-            size="sm"
-            rightIcon={<ArrowForwardIcon />}
-          >
-            Post Hiring Signal
-          </Button>
-        </Box>
+        ))}
       </SimpleGrid>
     </PageShell>
   );

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Box,
-  Heading,
   Text,
   Input,
   Button,
@@ -28,7 +27,6 @@ import {
   Select,
   useDisclosure,
   useToast,
-  Badge,
 } from "@chakra-ui/react";
 import {
   AddIcon,
@@ -36,10 +34,10 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   AttachmentIcon,
-  CheckCircleIcon,
 } from "@chakra-ui/icons";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import PageShell from "../../components/layout/PageShell";
+import AISkillDetectButton from "../../components/shared/AISkillDetectButton";
 import SkillTag from "../../components/shared/SkillTag";
 import LoadingSpinner from "../../components/shared/LoadingSpinner";
 import EmptyState from "../../components/shared/EmptyState";
@@ -67,7 +65,8 @@ const JobsManager = () => {
   const [jobDistrict, setJobDistrict] = useState("");
   const [jobState, setJobState] = useState("");
   const [sector, setSector] = useState("IT-ITeS");
-  const [experience, setExperience] = useState("0-2 Years");
+  const [experience, setExperience] = useState("Entry Level (0-1 yrs)");
+  const [jobDescription, setJobDescription] = useState("");
   const [jobSkillInput, setJobSkillInput] = useState("");
   const [jobSkills, setJobSkills] = useState([]);
 
@@ -89,7 +88,7 @@ const JobsManager = () => {
       const res = await api.get(`/jobs?${params.toString()}`);
       return res.data;
     },
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   });
 
   // Single Job Mutation
@@ -115,6 +114,7 @@ const JobsManager = () => {
       setJobDistrict("");
       setJobState("");
       setJobSkills([]);
+      setJobDescription("");
     },
     onError: (err) => {
       toast({
@@ -179,9 +179,10 @@ const JobsManager = () => {
       title,
       company,
       district: jobDistrict,
-      state: jobState || "Maharashtra",
+      state: jobState.trim(),
       sector,
-      experienceLevel: experience,
+      proficiencyLevel: experience,
+      description: jobDescription.trim(),
       skills: jobSkills,
     });
   };
@@ -208,7 +209,7 @@ const JobsManager = () => {
   const pagination = jobsResult?.pagination || {
     total: jobs.length,
     page: page,
-    totalPages: Math.ceil(jobs.length / limit) || 1,
+    totalPages: 1,
   };
 
   return (
@@ -339,7 +340,7 @@ const JobsManager = () => {
                     {job.district}{job.state ? `, ${job.state}` : ""}
                   </Td>
                   <Td fontSize="xs" color="text.secondary">
-                    {job.sector || "General"}
+                    {job.sector || "—"}
                   </Td>
                   <Td maxW="280px">
                     <Flex wrap="wrap" gap={1}>
@@ -349,7 +350,7 @@ const JobsManager = () => {
                     </Flex>
                   </Td>
                   <Td fontSize="xs" color="text.muted">
-                    {job.experienceLevel || "Entry"}
+                    {job.proficiencyLevel || "—"}
                   </Td>
                 </Tr>
               ))}
@@ -373,8 +374,8 @@ const JobsManager = () => {
               <Button
                 size="xs"
                 rightIcon={<ChevronRightIcon />}
-                onClick={() => setPage((p) => (pagination.totalPages ? Math.min(pagination.totalPages, p + 1) : p + 1))}
-                isDisabled={pagination.totalPages ? page >= pagination.totalPages : false || isFetching}
+                onClick={() => setPage((p) => Math.min(pagination.totalPages || 1, p + 1))}
+                isDisabled={page >= (pagination.totalPages || 1) || isFetching}
               >
                 Next
               </Button>
@@ -463,7 +464,25 @@ const JobsManager = () => {
                 </SimpleGrid>
 
                 <FormControl>
-                  <FormLabel fontSize="xs" fontWeight="700">Skills Required (Pill Tags)</FormLabel>
+                  <FormLabel fontSize="xs" fontWeight="700">Job Description</FormLabel>
+                  <Textarea
+                    size="sm"
+                    rows={3}
+                    placeholder="Responsibilities, tools and competencies — the AI can extract skills from this"
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
+                  />
+                </FormControl>
+
+                <FormControl>
+                  <Flex justify="space-between" align="center" mb={1}>
+                    <FormLabel fontSize="xs" fontWeight="700" mb={0}>Skills Required (Pill Tags)</FormLabel>
+                    <AISkillDetectButton
+                      text={jobDescription}
+                      existingSkills={jobSkills}
+                      onDetected={(found) => setJobSkills((prev) => [...prev, ...found])}
+                    />
+                  </Flex>
                   <Flex gap={2} mb={2}>
                     <Input
                       size="sm"

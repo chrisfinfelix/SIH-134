@@ -3,8 +3,15 @@ const Course = require("../models/Course");
 const Job = require("../models/Job");
 const User = require("../models/User");
 const PlacementOutcome = require("../models/PlacementOutcome");
+const { escapeRegex } = require("../utils/escapeRegex");
+const { withExtractedSkills } = require("../services/aiService");
 
-const escapeRegex = (str = "") => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+// Institute users may only act on the institute linked to their own account.
+const assertOwnsInstitute = async (req, instituteId) => {
+  if (req.user.role !== "institute") return true;
+  const own = await Institute.findOne({ userId: req.user.userId }).select("_id");
+  return !!own && String(own._id) === String(instituteId);
+};
 
 // GET /api/institutes?state=Kerala&district=Kottayam&search=ABC
 const getInstitutes = async (req, res, next) => {
@@ -130,6 +137,10 @@ const updateInstitute = async (req, res, next) => {
       contactPhone,
     } = req.body;
 
+    if (!(await assertOwnsInstitute(req, req.params.id))) {
+      return res.status(403).json({ success: false, message: "Not authorized to edit this institute" });
+    }
+
     const institute = await Institute.findByIdAndUpdate(
       req.params.id,
       {
@@ -144,7 +155,7 @@ const updateInstitute = async (req, res, next) => {
         ...(contactEmail !== undefined && { contactEmail }),
         ...(contactPhone !== undefined && { contactPhone }),
       },
-      { new: true }
+      { new: true, runValidators: true }
     ).populate("coursesOffered");
 
     if (!institute) {
@@ -183,21 +194,29 @@ const getMyInstituteDashboard = async (req, res, next) => {
       institute = await Institute.findById(user.instituteId).populate("coursesOffered");
     }
     if (!institute) {
-      // Look up by userId or organization name
+      // Claim by name only if that institute isn't already owned by another account
       institute = await Institute.findOne({
-        $or: [{ userId: user._id }, { name: user.organization || user.name }],
+        $or: [
+          { userId: user._id },
+          { name: user.organization || user.name, userId: null },
+        ],
       }).populate("coursesOffered");
+      if (institute && !institute.userId) {
+        institute.userId = user._id;
+        await institute.save();
+        await User.findByIdAndUpdate(user._id, { instituteId: institute._id });
+      }
     }
 
-    // If still no institute, create a default profile so the dashboard renders seamlessly
+    // First visit: create a starter profile the user completes from the Profile tab
     if (!institute) {
       institute = await Institute.create({
         name: user.organization || `${user.name} Skill Centre`,
-        state: user.primaryState || "Kerala",
-        district: "Kottayam",
-        languages: ["English", "Malayalam"],
-        totalTrainers: 25,
-        skillsCovered: ["JavaScript", "React", "Python", "Data Analytics", "Cloud"],
+        state: user.primaryState || "Not specified",
+        district: "Not specified",
+        languages: ["English"],
+        totalTrainers: 0,
+        skillsCovered: [],
         contactEmail: user.email,
         userId: user._id,
       });
@@ -313,22 +332,28 @@ const postJob = async (req, res, next) => {
       return res.status(404).json({ success: false, message: "Institute not found" });
     }
 
+    if (!(await assertOwnsInstitute(req, institute._id))) {
+      return res.status(403).json({ success: false, message: "Not authorized to post jobs for this institute" });
+    }
+
     const { title, description, skills, salaryRange } = req.body;
     if (!title || !description) {
       return res.status(400).json({ success: false, message: "Job title and description are required" });
     }
 
-    const job = await Job.create({
-      title,
-      description,
-      company: institute.name,
-      district: institute.district,
-      state: institute.state,
-      skills: Array.isArray(skills) ? skills : [],
-      salaryRange: salaryRange || "",
-      source: "institute-manual",
-      postedDate: new Date(),
-    });
+    const job = await Job.create(
+      await withExtractedSkills({
+        title,
+        description,
+        company: institute.name,
+        district: institute.district,
+        state: institute.state,
+        skills: Array.isArray(skills) ? skills : [],
+        salaryRange: salaryRange || "",
+        source: "institute-manual",
+        postedDate: new Date(),
+      })
+    );
 
     res.status(201).json({
       success: true,

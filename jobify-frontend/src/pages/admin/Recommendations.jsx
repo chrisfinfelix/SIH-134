@@ -11,9 +11,6 @@ import {
   Th,
   Td,
   Flex,
-  HStack,
-  VStack,
-  Badge,
   Button,
   Modal,
   ModalOverlay,
@@ -26,7 +23,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { EditIcon, WarningIcon, CheckCircleIcon, BellIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, BellIcon } from "@chakra-ui/icons";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import PageShell from "../../components/layout/PageShell";
 import StatusBadge from "../../components/shared/StatusBadge";
@@ -133,15 +130,15 @@ const Recommendations = () => {
           <LoadingSpinner message="Evaluating curriculum gap scores and fetching directives..." />
         ) : filtered.length > 0 ? (
           <Box overflowX="auto">
-            <Table variant="simple" size="sm">
+            <Table variant="simple" size="sm" minW="1080px">
               <Thead>
                 <Tr>
                   <Th>Course Name</Th>
                   <Th>District</Th>
                   <Th>Sector</Th>
                   <Th>Flag Type</Th>
-                  <Th maxW="300px">Recommendation Directive</Th>
-                  <Th>Suggested Skills to Add</Th>
+                  <Th minW="280px">Recommendation Directive</Th>
+                  <Th minW="200px">Suggested Skills to Add</Th>
                   <Th>Generated Date</Th>
                   <Th>Action</Th>
                 </Tr>
@@ -158,7 +155,7 @@ const Recommendations = () => {
 
                   return (
                     <Tr key={item._id || item.id || idx} _hover={{ bg: "gray.50" }}>
-                      <Td fontWeight="600" color="text.primary">
+                      <Td fontWeight="600" color="text.primary" minW="170px">
                         {courseName}
                       </Td>
                       <Td fontSize="xs">{district}</Td>
@@ -168,10 +165,10 @@ const Recommendations = () => {
                       <Td>
                         <StatusBadge flag={flag} />
                       </Td>
-                      <Td fontSize="xs" color="text.secondary" maxW="300px">
+                      <Td fontSize="xs" color="text.secondary" minW="280px" lineHeight="short">
                         {recText}
                       </Td>
-                      <Td maxW="240px">
+                      <Td minW="200px">
                         <Flex wrap="wrap" gap={1}>
                           {suggestedSkills.map((s, sIdx) => (
                             <SkillTag key={sIdx} skill={s} colorScheme="orange" size="sm" />

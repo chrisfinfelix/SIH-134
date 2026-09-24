@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+app/data/synthetic/out/
+app/store/db/
+training/checkpoints/
+notebooks_or_scripts/demo_output.json
+*.log
+.pytest_cache/

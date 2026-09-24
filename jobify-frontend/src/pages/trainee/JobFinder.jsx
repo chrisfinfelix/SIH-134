@@ -12,9 +12,10 @@ import {
   Badge,
   Icon,
   Divider,
+  Select,
 } from "@chakra-ui/react";
 import { SearchIcon, CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link as RouterLink } from "react-router-dom";
 import PageShell from "../../components/layout/PageShell";
 import SkillTag from "../../components/shared/SkillTag";
@@ -28,9 +29,13 @@ const matchColor = (pct) => {
   return "red";
 };
 
+const PAGE_SIZE = 10;
+
 const JobFinder = () => {
   const [district, setDistrict] = useState("");
   const [state, setState] = useState("");
+  const [minMatch, setMinMatch] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["trainee", "jobs", { district, state }],
@@ -41,10 +46,13 @@ const JobFinder = () => {
       const res = await api.get(`/trainee/jobs?${params.toString()}`);
       return res.data.data;
     },
+    placeholderData: keepPreviousData,
   });
 
   const hasSkills = data?.hasSkills;
-  const jobs = data?.jobs || [];
+  const allJobs = data?.jobs || [];
+  const matchingJobs = allJobs.filter((j) => j.matchPercentage >= minMatch);
+  const jobs = matchingJobs.slice(0, visibleCount);
   const placementChance = data?.placementChance;
 
   return (
@@ -119,7 +127,7 @@ const JobFinder = () => {
         boxShadow="sm"
         mb={6}
       >
-        <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={3}>
+        <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={3}>
           <Box>
             <Text fontSize="2xs" fontWeight="700" color="text.secondary" mb={1}>
               DISTRICT
@@ -128,7 +136,10 @@ const JobFinder = () => {
               size="sm"
               placeholder="Filter by district..."
               value={district}
-              onChange={(e) => setDistrict(e.target.value)}
+              onChange={(e) => {
+                setDistrict(e.target.value);
+                setVisibleCount(PAGE_SIZE);
+              }}
             />
           </Box>
           <Box>
@@ -139,10 +150,37 @@ const JobFinder = () => {
               size="sm"
               placeholder="Filter by state..."
               value={state}
-              onChange={(e) => setState(e.target.value)}
+              onChange={(e) => {
+                setState(e.target.value);
+                setVisibleCount(PAGE_SIZE);
+              }}
             />
           </Box>
+          <Box>
+            <Text fontSize="2xs" fontWeight="700" color="text.secondary" mb={1}>
+              MINIMUM MATCH
+            </Text>
+            <Select
+              size="sm"
+              value={minMatch}
+              onChange={(e) => {
+                setMinMatch(Number(e.target.value));
+                setVisibleCount(PAGE_SIZE);
+              }}
+            >
+              <option value={0}>Any match</option>
+              <option value={25}>25% or better</option>
+              <option value={50}>50% or better</option>
+              <option value={75}>75% or better</option>
+            </Select>
+          </Box>
         </SimpleGrid>
+        {!isLoading && (
+          <Text fontSize="xs" color="text.muted" mt={3}>
+            Showing {jobs.length} of {matchingJobs.length} matching job{matchingJobs.length === 1 ? "" : "s"}
+            {matchingJobs.length !== allJobs.length && ` (${allJobs.length} total)`}
+          </Text>
+        )}
       </Box>
 
       {isLoading ? (
@@ -228,6 +266,17 @@ const JobFinder = () => {
               </SimpleGrid>
             </Box>
           ))}
+          {matchingJobs.length > jobs.length && (
+            <Button
+              variant="outline"
+              colorScheme="brand"
+              size="sm"
+              alignSelf="center"
+              onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
+            >
+              Show {Math.min(PAGE_SIZE, matchingJobs.length - jobs.length)} more
+            </Button>
+          )}
         </VStack>
       )}
     </PageShell>

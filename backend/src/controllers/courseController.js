@@ -4,76 +4,86 @@ const Recommendation = require("../models/Recommendation");
 const PlacementOutcome = require("../models/PlacementOutcome");
 const Institute = require("../models/Institute");
 const { ensureAutoGapAlert } = require("./notificationController");
+const { containsRegex, exactRegex } = require("../utils/escapeRegex");
+const { parsePagination, buildPagination } = require("../utils/pagination");
+
+// "unassessed" selects courses that have no gap score yet
+const UNASSESSED_FLAG = "unassessed";
 
 // GET /api/courses
 const getCourses = async (req, res, next) => {
   try {
-    const { district, sector, skill, flag, page = 1, limit = 20 } = req.query;
+    const { district, sector, skill, state, deliveryMode, flag } = req.query;
+    const { page, limit, skip } = parsePagination(req.query);
 
     const filter = {};
-    if (district) filter.district = new RegExp(district, "i");
-    if (sector) filter.sector = new RegExp(sector, "i");
-    if (skill) filter.skills = { $in: [new RegExp(skill, "i")] };
+    if (district) filter.district = containsRegex(district);
+    if (sector) filter.sector = containsRegex(sector);
+    if (skill) filter.skills = { $in: [containsRegex(skill)] };
+    if (state) filter.state = exactRegex(state);
+    if (deliveryMode && deliveryMode !== "All") filter.deliveryMode = deliveryMode;
 
-    const skip = (Number(page) - 1) * Number(limit);
-    const total = await Course.countDocuments(filter);
-    let courses = await Course.find(filter).skip(skip).limit(Number(limit)).sort({ createdAt: -1 });
+    // Resolve the flag filter against GapScore up front so pagination counts are correct
+    if (flag) {
+      if (flag.toLowerCase() === UNASSESSED_FLAG) {
+        filter._id = { $nin: await GapScore.distinct("courseId") };
+      } else {
+        filter._id = { $in: await GapScore.distinct("courseId", { flag: containsRegex(flag) }) };
+      }
+    }
 
-    // Enrich each course with gap score and recommendation
-    const enriched = await Promise.all(
-      courses.map(async (course) => {
-        const gap = await GapScore.findOne({ courseId: course._id });
-        const rec = await Recommendation.findOne({ courseId: course._id });
+    const [total, courses] = await Promise.all([
+      Course.countDocuments(filter),
+      Course.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 }),
+    ]);
 
-        // If filtering by flag, skip courses that don't match
-        if (flag && gap?.flag && !gap.flag.toLowerCase().includes(flag.toLowerCase())) {
-          return null;
-        }
+    const courseIds = courses.map((c) => c._id);
+    const [gaps, recs] = await Promise.all([
+      GapScore.find({ courseId: { $in: courseIds } }),
+      Recommendation.find({ courseId: { $in: courseIds } }),
+    ]);
+    const gapByCourse = new Map(gaps.map((g) => [String(g.courseId), g]));
+    const recByCourse = new Map(recs.map((r) => [String(r.courseId), r]));
 
-        ensureAutoGapAlert(course, gap?.flag);
-
-        return {
-          id: course._id,
-          courseName: course.courseName,
-          externalCourseId: course.externalCourseId,
-          district: course.district,
-          sector: course.sector,
-          nsqfLevel: course.nsqfLevel,
-          durationWeeks: course.durationWeeks,
-          provider: course.provider,
-          skills: course.skills,
-          gapScore: gap?.gapScore ?? null,
-          flag: gap?.flag ?? null,
-          matchedSkills: gap?.matchedSkills ?? [],
-          missingSkills: gap?.missingSkills ?? [],
-          demandCount: gap?.demandCount ?? null,
-          recommendation: rec
-            ? {
-                text: rec.recommendationText,
-                flagType: rec.flagType,
-                suggestedSkills: rec.suggestedSkillsToAdd,
-              }
-            : null,
-        };
-      })
-    );
-
-    const filtered = enriched.filter(Boolean);
-
-    res.json({
-      success: true,
-      data: filtered,
-      pagination: {
-        page: Number(page),
-        limit: Number(limit),
-        total,
-        pages: Math.ceil(total / Number(limit)),
-      },
+    const data = courses.map((course) => {
+      const gap = gapByCourse.get(String(course._id));
+      ensureAutoGapAlert(course, gap?.flag);
+      return serializeCourse(course, gap, recByCourse.get(String(course._id)));
     });
+
+    res.json({ success: true, data, pagination: buildPagination(page, limit, total) });
   } catch (error) {
     next(error);
   }
 };
+
+const serializeCourse = (course, gap, rec) => ({
+  id: course._id,
+  courseName: course.courseName,
+  externalCourseId: course.externalCourseId,
+  district: course.district,
+  state: course.state,
+  deliveryMode: course.deliveryMode,
+  sector: course.sector,
+  nsqfLevel: course.nsqfLevel,
+  durationWeeks: course.durationWeeks,
+  provider: course.provider,
+  proficiencyLevel: course.proficiencyLevel,
+  skills: course.skills,
+  createdAt: course.createdAt,
+  gapScore: gap?.gapScore ?? null,
+  flag: gap?.flag || null,
+  matchedSkills: gap?.matchedSkills ?? [],
+  missingSkills: gap?.missingSkills ?? [],
+  demandCount: gap?.demandCount ?? null,
+  recommendation: rec
+    ? {
+        text: rec.recommendationText,
+        flagType: rec.flagType,
+        suggestedSkills: rec.suggestedSkillsToAdd,
+      }
+    : null,
+});
 
 // GET /api/courses/:id
 const getCourseById = async (req, res, next) => {
@@ -83,38 +93,18 @@ const getCourseById = async (req, res, next) => {
       return res.status(404).json({ success: false, message: "Course not found" });
     }
 
-    const gap = await GapScore.findOne({ courseId: course._id });
-    const rec = await Recommendation.findOne({ courseId: course._id });
-    const placement = await PlacementOutcome.findOne({ courseId: course._id }).sort({ year: -1 });
+    const [gap, rec, placement] = await Promise.all([
+      GapScore.findOne({ courseId: course._id }),
+      Recommendation.findOne({ courseId: course._id }),
+      PlacementOutcome.findOne({ courseId: course._id }).sort({ year: -1 }),
+    ]);
 
     ensureAutoGapAlert(course, gap?.flag);
 
     res.json({
       success: true,
       data: {
-        id: course._id,
-        courseName: course.courseName,
-        externalCourseId: course.externalCourseId,
-        district: course.district,
-        sector: course.sector,
-        nsqfLevel: course.nsqfLevel,
-        durationWeeks: course.durationWeeks,
-        provider: course.provider,
-        proficiencyLevel: course.proficiencyLevel,
-        skills: course.skills,
-        createdAt: course.createdAt,
-        gapScore: gap?.gapScore ?? null,
-        flag: gap?.flag ?? null,
-        matchedSkills: gap?.matchedSkills ?? [],
-        missingSkills: gap?.missingSkills ?? [],
-        demandCount: gap?.demandCount ?? null,
-        recommendation: rec
-          ? {
-              text: rec.recommendationText,
-              flagType: rec.flagType,
-              suggestedSkills: rec.suggestedSkillsToAdd,
-            }
-          : null,
+        ...serializeCourse(course, gap, rec),
         placement: placement
           ? {
               placementPercent: placement.placementPercent,

@@ -1,0 +1,411 @@
+[
+  {
+    "code": "NCO-2131.01",
+    "title": "Software Developer",
+    "sector": "IT",
+    "typical_skills": [
+      "Python",
+      "JavaScript",
+      "React",
+      "Node.js",
+      "Git",
+      "REST API Development"
+    ]
+  },
+  {
+    "code": "NCO-2131.02",
+    "title": "Data Scientist",
+    "sector": "IT",
+    "typical_skills": [
+      "Python",
+      "Machine Learning",
+      "Data Analysis",
+      "SQL",
+      "Deep Learning"
+    ]
+  },
+  {
+    "code": "NCO-2131.03",
+    "title": "DevOps Engineer",
+    "sector": "IT",
+    "typical_skills": [
+      "Docker",
+      "Kubernetes",
+      "AWS",
+      "CI/CD",
+      "Linux Administration"
+    ]
+  },
+  {
+    "code": "NCO-2131.04",
+    "title": "Full Stack Developer",
+    "sector": "IT",
+    "typical_skills": [
+      "JavaScript",
+      "TypeScript",
+      "React",
+      "Node.js",
+      "MongoDB"
+    ]
+  },
+  {
+    "code": "NCO-2131.05",
+    "title": "Cloud Engineer",
+    "sector": "IT",
+    "typical_skills": [
+      "AWS",
+      "Azure",
+      "Cloud Computing",
+      "Docker",
+      "Kubernetes"
+    ]
+  },
+  {
+    "code": "NCO-2131.06",
+    "title": "Cybersecurity Analyst",
+    "sector": "IT",
+    "typical_skills": [
+      "Cybersecurity",
+      "Network Administration",
+      "Linux Administration"
+    ]
+  },
+  {
+    "code": "NCO-2131.07",
+    "title": "QA Engineer",
+    "sector": "IT",
+    "typical_skills": [
+      "Testing & QA",
+      "Agile Methodology",
+      "SQL"
+    ]
+  },
+  {
+    "code": "NCO-2131.08",
+    "title": "Mobile App Developer",
+    "sector": "IT",
+    "typical_skills": [
+      "Android Development",
+      "iOS Development",
+      "Git"
+    ]
+  },
+  {
+    "code": "NCO-2131.09",
+    "title": "Data Engineer",
+    "sector": "IT",
+    "typical_skills": [
+      "Data Engineering",
+      "SQL",
+      "Big Data",
+      "Python"
+    ]
+  },
+  {
+    "code": "NCO-2131.10",
+    "title": "UI/UX Designer",
+    "sector": "IT",
+    "typical_skills": [
+      "UI/UX Design",
+      "Data Visualization",
+      "Communication Skills"
+    ]
+  },
+  {
+    "code": "NCO-7223.01",
+    "title": "CNC Machine Operator",
+    "sector": "Manufacturing",
+    "typical_skills": [
+      "CNC Machining",
+      "Quality Control",
+      "Machine Maintenance"
+    ]
+  },
+  {
+    "code": "NCO-7212.01",
+    "title": "Welder",
+    "sector": "Manufacturing",
+    "typical_skills": [
+      "Welding",
+      "Health & Safety Compliance",
+      "Sheet Metal Fabrication"
+    ]
+  },
+  {
+    "code": "NCO-3115.01",
+    "title": "Mechanical Design Engineer",
+    "sector": "Manufacturing",
+    "typical_skills": [
+      "AutoCAD",
+      "SolidWorks",
+      "Production Planning"
+    ]
+  },
+  {
+    "code": "NCO-8121.01",
+    "title": "Industrial Robotics Technician",
+    "sector": "Manufacturing",
+    "typical_skills": [
+      "Industrial Robotics",
+      "PLC Programming",
+      "Electrical Wiring"
+    ]
+  },
+  {
+    "code": "NCO-3118.01",
+    "title": "Quality Control Inspector",
+    "sector": "Manufacturing",
+    "typical_skills": [
+      "Quality Control",
+      "Six Sigma",
+      "Lean Manufacturing"
+    ]
+  },
+  {
+    "code": "NCO-4321.01",
+    "title": "Supply Chain Coordinator",
+    "sector": "Manufacturing",
+    "typical_skills": [
+      "Supply Chain Management",
+      "Inventory Management",
+      "ERP Systems (SAP)"
+    ]
+  },
+  {
+    "code": "NCO-7233.01",
+    "title": "Maintenance Technician",
+    "sector": "Manufacturing",
+    "typical_skills": [
+      "Machine Maintenance",
+      "Hydraulics",
+      "Pneumatics"
+    ]
+  },
+  {
+    "code": "NCO-8211.01",
+    "title": "Assembly Line Operator",
+    "sector": "Manufacturing",
+    "typical_skills": [
+      "Assembly Line Operations",
+      "Quality Control"
+    ]
+  },
+  {
+    "code": "NCO-7222.01",
+    "title": "Tool & Die Maker",
+    "sector": "Manufacturing",
+    "typical_skills": [
+      "Tool & Die Making",
+      "Metallurgy",
+      "CNC Machining"
+    ]
+  },
+  {
+    "code": "NCO-8332.01",
+    "title": "Forklift Operator",
+    "sector": "Manufacturing",
+    "typical_skills": [
+      "Forklift Operation",
+      "Warehouse Operations"
+    ]
+  },
+  {
+    "code": "NCO-2221.01",
+    "title": "Registered Nurse",
+    "sector": "Healthcare",
+    "typical_skills": [
+      "Nursing",
+      "Patient Care",
+      "First Aid & CPR"
+    ]
+  },
+  {
+    "code": "NCO-3253.01",
+    "title": "Medical Coder",
+    "sector": "Healthcare",
+    "typical_skills": [
+      "Medical Coding",
+      "Medical Billing",
+      "Electronic Health Records (EHR)"
+    ]
+  },
+  {
+    "code": "NCO-3254.01",
+    "title": "Pharmacy Technician",
+    "sector": "Healthcare",
+    "typical_skills": [
+      "Pharmacology",
+      "Medical Billing",
+      "Customer Service"
+    ]
+  },
+  {
+    "code": "NCO-3212.01",
+    "title": "Medical Lab Technician",
+    "sector": "Healthcare",
+    "typical_skills": [
+      "Medical Laboratory Technology",
+      "Phlebotomy",
+      "Infection Control"
+    ]
+  },
+  {
+    "code": "NCO-2264.01",
+    "title": "Physiotherapist",
+    "sector": "Healthcare",
+    "typical_skills": [
+      "Physiotherapy",
+      "Anatomy & Physiology",
+      "Patient Care"
+    ]
+  },
+  {
+    "code": "NCO-3211.01",
+    "title": "Radiology Technician",
+    "sector": "Healthcare",
+    "typical_skills": [
+      "Radiology",
+      "Patient Care",
+      "Anatomy & Physiology"
+    ]
+  },
+  {
+    "code": "NCO-3256.01",
+    "title": "EMT / Paramedic",
+    "sector": "Healthcare",
+    "typical_skills": [
+      "Emergency Medical Services",
+      "First Aid & CPR",
+      "Patient Care"
+    ]
+  },
+  {
+    "code": "NCO-2263.01",
+    "title": "Nutritionist",
+    "sector": "Healthcare",
+    "typical_skills": [
+      "Dietetics & Nutrition",
+      "Patient Care",
+      "Communication Skills"
+    ]
+  },
+  {
+    "code": "NCO-2634.01",
+    "title": "Mental Health Counselor",
+    "sector": "Healthcare",
+    "typical_skills": [
+      "Mental Health Counseling",
+      "Communication Skills"
+    ]
+  },
+  {
+    "code": "NCO-1342.01",
+    "title": "Healthcare Administrator",
+    "sector": "Healthcare",
+    "typical_skills": [
+      "Healthcare Management",
+      "Electronic Health Records (EHR)"
+    ]
+  },
+  {
+    "code": "NCO-5223.01",
+    "title": "Retail Sales Associate",
+    "sector": "Retail",
+    "typical_skills": [
+      "Retail Sales",
+      "Customer Service",
+      "Point of Sale (POS) Systems"
+    ]
+  },
+  {
+    "code": "NCO-3339.01",
+    "title": "E-commerce Manager",
+    "sector": "Retail",
+    "typical_skills": [
+      "E-commerce Management",
+      "Digital Marketing",
+      "SEO"
+    ]
+  },
+  {
+    "code": "NCO-3339.02",
+    "title": "Digital Marketing Executive",
+    "sector": "Retail",
+    "typical_skills": [
+      "Digital Marketing",
+      "Social Media Marketing",
+      "SEO",
+      "Email Marketing"
+    ]
+  },
+  {
+    "code": "NCO-4321.02",
+    "title": "Warehouse Supervisor",
+    "sector": "Retail",
+    "typical_skills": [
+      "Warehouse Operations",
+      "Inventory Auditing",
+      "Team Leadership"
+    ]
+  },
+  {
+    "code": "NCO-5222.01",
+    "title": "Visual Merchandiser",
+    "sector": "Retail",
+    "typical_skills": [
+      "Visual Merchandising",
+      "Product Merchandising"
+    ]
+  },
+  {
+    "code": "NCO-3323.01",
+    "title": "Store Manager",
+    "sector": "Retail",
+    "typical_skills": [
+      "Team Leadership",
+      "Inventory Auditing",
+      "Customer Service",
+      "Bookkeeping"
+    ]
+  },
+  {
+    "code": "NCO-3322.01",
+    "title": "Sales Executive",
+    "sector": "Retail",
+    "typical_skills": [
+      "Negotiation Skills",
+      "CRM Software",
+      "Communication Skills"
+    ]
+  },
+  {
+    "code": "NCO-4222.01",
+    "title": "Customer Support Representative",
+    "sector": "Retail",
+    "typical_skills": [
+      "Customer Service",
+      "CRM Software",
+      "Communication Skills"
+    ]
+  },
+  {
+    "code": "NCO-4311.01",
+    "title": "Bookkeeper",
+    "sector": "Retail",
+    "typical_skills": [
+      "Bookkeeping",
+      "Excel",
+      "Inventory Auditing"
+    ]
+  },
+  {
+    "code": "NCO-3312.01",
+    "title": "Loss Prevention Officer",
+    "sector": "Retail",
+    "typical_skills": [
+      "Loss Prevention",
+      "Inventory Auditing",
+      "Cash Handling"
+    ]
+  }
+]

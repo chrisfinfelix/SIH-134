@@ -55,7 +55,7 @@ const DistrictTable = ({
         </Flex>
       ) : (
         <Box overflowX="auto">
-          <Table variant="simple" size="sm">
+          <Table variant="simple" size="sm" minW="560px">
             <Thead>
               <Tr>
                 <Th>District</Th>
@@ -69,7 +69,7 @@ const DistrictTable = ({
               {data.map((item, index) => {
                 const jobs = item.jobCount || item.jobs || 0;
                 const courses = item.courseCount || item.courses || 0;
-                const ratio = courses > 0 ? (jobs / courses).toFixed(1) : jobs > 0 ? "High" : "0";
+                const ratioLabel = courses > 0 ? `${(jobs / courses).toFixed(1)}x` : jobs > 0 ? "No courses" : "—";
                 const isHighDemand = courses > 0 && jobs / courses > 3;
                 const isUnderserved = courses === 0 && jobs > 0;
                 const isBalanced = courses > 0 && jobs / courses <= 3 && jobs / courses >= 0.5;
@@ -94,8 +94,8 @@ const DistrictTable = ({
                           borderRadius="full"
                           flex="1"
                         />
-                        <Text fontSize="2xs" color="text.muted" w="32px">
-                          {ratio}x
+                        <Text fontSize="2xs" color="text.muted" minW="56px" whiteSpace="nowrap">
+                          {ratioLabel}
                         </Text>
                       </Flex>
                     </Td>

@@ -10,8 +10,6 @@ import {
   FormLabel,
   SimpleGrid,
   Textarea,
-  VStack,
-  HStack,
   Flex,
   Table,
   Thead,
@@ -21,9 +19,8 @@ import {
   Td,
   Badge,
   useToast,
-  Divider,
 } from "@chakra-ui/react";
-import { AddIcon, StarIcon, CheckCircleIcon } from "@chakra-ui/icons";
+import { AddIcon, StarIcon } from "@chakra-ui/icons";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import PageShell from "../../components/layout/PageShell";
 import SkillTag from "../../components/shared/SkillTag";

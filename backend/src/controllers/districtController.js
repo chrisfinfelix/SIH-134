@@ -1,5 +1,6 @@
 const DistrictPlan = require("../models/DistrictPlan");
 const Job = require("../models/Job");
+const { exactRegex } = require("../utils/escapeRegex");
 
 // GET /api/districts
 const getDistricts = async (req, res, next) => {
@@ -30,7 +31,7 @@ const getDistricts = async (req, res, next) => {
 const getDistrictPlan = async (req, res, next) => {
   try {
     const name = req.params.name;
-    const plan = await DistrictPlan.findOne({ district: new RegExp(`^${name}$`, "i") });
+    const plan = await DistrictPlan.findOne({ district: exactRegex(name) });
 
     if (!plan) {
       return res.status(404).json({ success: false, message: `No plan found for district: ${name}` });

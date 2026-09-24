@@ -78,7 +78,7 @@ backend/
 
 | Role | Email | Password | Permissions |
 |---|---|---|---|
-| **Admin** | `admin@sih26134.dev` | `Admin@1234` | Full access to stats, recommendations, district summaries, job management |
+| **Admin** | `admin@jobify.gov.in` | `Admin@123` | Full access to stats, recommendations, district summaries, job management |
 | **Employer** | Can be registered via `POST /api/auth/register` (role: `"employer"`) | User chosen | Validate courses, submit hiring demand signals |
 | **Trainee** | Can be registered via `POST /api/auth/register` (role: `"trainee"`) | User chosen | Explore course pathways, public job & course directories |
 

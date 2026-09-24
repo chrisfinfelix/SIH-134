@@ -5,8 +5,6 @@ import {
   Text,
   SimpleGrid,
   Button,
-  HStack,
-  VStack,
   Flex,
   Icon,
   Badge,
@@ -17,7 +15,6 @@ import {
   StarIcon,
   ArrowForwardIcon,
   CheckCircleIcon,
-  InfoOutlineIcon,
 } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -48,6 +45,10 @@ const TraineeDashboard = () => {
   });
 
   const userSkillCount = user?.skills?.length || 0;
+  const userSkillsLower = new Set((user?.skills || []).map((s) => s.toLowerCase()));
+  const missingTopSkills = trendingSkills
+    .map((item) => (typeof item === "string" ? item : item.skill || item.name || item._id))
+    .filter((name) => name && !userSkillsLower.has(name.toLowerCase()));
 
   return (
     <PageShell
@@ -86,6 +87,8 @@ const TraineeDashboard = () => {
           <Button
             as={RouterLink}
             to="/trainee/skill-gap"
+            mt="auto"
+            alignSelf="flex-start"
             bg="#FF6B00"
             color="white"
             _hover={{ bg: "#e66000" }}
@@ -110,17 +113,21 @@ const TraineeDashboard = () => {
         />
         <StatCard
           label="Trending Market Skills"
-          value={trendingSkills.length > 0 ? trendingSkills.length : 20}
+          value={isTrendingLoading ? "…" : trendingSkills.length}
           icon={StarIcon}
           color="accent.500"
           helpText="Aggregated from live jobs"
         />
         <StatCard
-          label="Career Pathways"
-          value="100+"
+          label="Top Skills You're Missing"
+          value={isTrendingLoading ? "…" : missingTopSkills.length}
           icon={SearchIcon}
           color="brand.500"
-          helpText="Role-to-course mapping"
+          helpText={
+            missingTopSkills.length
+              ? `Next up: ${missingTopSkills.slice(0, 2).join(", ")}`
+              : "You cover every trending skill"
+          }
         />
       </SimpleGrid>
 
@@ -133,6 +140,8 @@ const TraineeDashboard = () => {
           borderWidth="1px"
           borderColor="#E2E8F0"
           boxShadow="sm"
+          display="flex"
+          flexDirection="column"
           _hover={{ borderColor: "brand.500" }}
           transition="all 0.2s"
         >
@@ -158,11 +167,13 @@ const TraineeDashboard = () => {
             </Box>
           </Flex>
           <Text fontSize="sm" color="text.secondary" mb={4}>
-            Search across job categories (e.g. Electrician, Full Stack Developer, Data Analyst) to view matching courses sorted by curriculum relevance.
+            Search across job categories (e.g. Full Stack Developer, Data Analyst, Cloud Engineer) to view matching courses sorted by curriculum relevance.
           </Text>
           <Button
             as={RouterLink}
             to="/trainee/pathways"
+            mt="auto"
+            alignSelf="flex-start"
             colorScheme="brand"
             size="sm"
             rightIcon={<ArrowForwardIcon />}
@@ -178,6 +189,8 @@ const TraineeDashboard = () => {
           borderWidth="1px"
           borderColor="#E2E8F0"
           boxShadow="sm"
+          display="flex"
+          flexDirection="column"
           _hover={{ borderColor: "#FF6B00" }}
           transition="all 0.2s"
         >
@@ -225,6 +238,8 @@ const TraineeDashboard = () => {
           borderWidth="1px"
           borderColor="#E2E8F0"
           boxShadow="sm"
+          display="flex"
+          flexDirection="column"
           _hover={{ borderColor: "govSuccess.500" }}
           transition="all 0.2s"
         >
@@ -255,6 +270,8 @@ const TraineeDashboard = () => {
           <Button
             as={RouterLink}
             to="/trainee/jobs"
+            mt="auto"
+            alignSelf="flex-start"
             colorScheme="green"
             size="sm"
             rightIcon={<ArrowForwardIcon />}

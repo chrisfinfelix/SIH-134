@@ -211,11 +211,11 @@ async function seed() {
   console.log(`✅ Inserted ${poCount} placement outcomes`);
 
   // ── 9. Default admin user ────────────────────────────────────
-  const adminEmail = "admin@sih26134.dev";
+  const adminEmail = "admin@jobify.gov.in";
   const existing = await User.findOne({ email: adminEmail });
   if (!existing) {
     const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash("Admin@1234", salt);
+    const passwordHash = await bcrypt.hash("Admin@123", salt);
     await User.create({
       name: "Admin",
       email: adminEmail,
@@ -223,7 +223,7 @@ async function seed() {
       role: "admin",
       organization: "SIH26134",
     });
-    console.log(`✅ Created default admin: ${adminEmail} / Admin@1234`);
+    console.log(`✅ Created default admin: ${adminEmail} / Admin@123`);
   } else {
     console.log(`ℹ  Admin user already exists – skipping`);
   }

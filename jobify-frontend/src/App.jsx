@@ -1,35 +1,40 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
+import LoadingSpinner from "./components/shared/LoadingSpinner";
 
 // Public Pages
-import Landing from "./pages/public/Landing";
-import Login from "./pages/public/Login";
-import Register from "./pages/public/Register";
+const Landing = lazy(() => import("./pages/public/Landing"));
+const Login = lazy(() => import("./pages/public/Login"));
+const Register = lazy(() => import("./pages/public/Register"));
 
 // Trainee Pages
-import TraineeDashboard from "./pages/trainee/TraineeDashboard";
-import PathwayFinder from "./pages/trainee/PathwayFinder";
-import SkillGap from "./pages/trainee/SkillGap";
-import CourseBrowser from "./pages/trainee/CourseBrowser";
-import JobFinder from "./pages/trainee/JobFinder";
+const TraineeDashboard = lazy(() => import("./pages/trainee/TraineeDashboard"));
+const PathwayFinder = lazy(() => import("./pages/trainee/PathwayFinder"));
+const SkillGap = lazy(() => import("./pages/trainee/SkillGap"));
+const CourseBrowser = lazy(() => import("./pages/trainee/CourseBrowser"));
+const JobFinder = lazy(() => import("./pages/trainee/JobFinder"));
 
 // Employer Pages
-import EmployerDashboard from "./pages/employer/EmployerDashboard";
-import ValidateCourses from "./pages/employer/ValidateCourses";
-import DemandSignals from "./pages/employer/DemandSignals";
-import PostJobs from "./pages/employer/PostJobs";
+const EmployerDashboard = lazy(() => import("./pages/employer/EmployerDashboard"));
+const ValidateCourses = lazy(() => import("./pages/employer/ValidateCourses"));
+const DemandSignals = lazy(() => import("./pages/employer/DemandSignals"));
+const PostJobs = lazy(() => import("./pages/employer/PostJobs"));
 
 // Institute Pages
-import InstituteDashboard from "./pages/institute/InstituteDashboard";
+const InstituteDashboard = lazy(() => import("./pages/institute/InstituteDashboard"));
 
 // Admin Pages
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import Recommendations from "./pages/admin/Recommendations";
-import JobsManager from "./pages/admin/JobsManager";
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const Recommendations = lazy(() => import("./pages/admin/Recommendations"));
+const JobsManager = lazy(() => import("./pages/admin/JobsManager"));
+
+// Shared Pages
+const MarketInsights = lazy(() => import("./pages/shared/MarketInsights"));
 
 function App() {
   return (
+    <Suspense fallback={<LoadingSpinner message="Loading page…" />}>
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<Landing />} />
@@ -148,9 +153,20 @@ function App() {
         }
       />
 
+      {/* Shared analyst pages */}
+      <Route
+        path="/insights"
+        element={
+          <ProtectedRoute role={["admin", "institute", "employer"]}>
+            <MarketInsights />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Catch-all redirect */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </Suspense>
   );
 }
 

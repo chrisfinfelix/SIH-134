@@ -32,6 +32,7 @@ const PageShell = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useAuth();
+  // Shared pages (e.g. /insights) pass role={null} and follow the signed-in user's portal
   const activeRole = role || user?.role || "trainee";
 
   return (
@@ -41,7 +42,7 @@ const PageShell = ({
 
       <Flex>
         {/* Desktop Left Sidebar */}
-        <Box display={{ base: "none", md: "block" }}>
+        <Box display={{ base: "none", md: "block" }} flexShrink={0} bg="white" borderRight="1px solid #E2E8F0">
           <Sidebar role={activeRole} />
         </Box>
 
@@ -54,7 +55,7 @@ const PageShell = ({
               Jobify Portal
             </DrawerHeader>
             <DrawerBody p={0}>
-              <Sidebar role={activeRole} onClose={onClose} />
+              <Sidebar role={activeRole} onClose={onClose} isDrawer />
             </DrawerBody>
           </DrawerContent>
         </Drawer>

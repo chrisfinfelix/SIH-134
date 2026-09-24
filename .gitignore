@@ -4,3 +4,10 @@ backend/node_modules/
 backend/.env
 *.log
 .DS_Store
+
+# ML model artifacts (too large for git)
+ml-service/training/checkpoints/
+ml-service/**/__pycache__/
+ml-service/**/*.pyc
+ml-service/venv/
+ml-service/.venv/

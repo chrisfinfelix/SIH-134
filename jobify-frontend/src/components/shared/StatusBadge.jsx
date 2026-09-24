@@ -7,7 +7,11 @@ const StatusBadge = ({ flag, ...props }) => {
   const normalized = String(flag).trim().toLowerCase();
 
   let colorScheme = "gray";
-  let displayLabel = flag;
+  // Unknown enum values like "curriculum_update" render as "Curriculum Update"
+  let displayLabel = String(flag)
+    .replace(/[_-]+/g, " ")
+    .trim()
+    .replace(/\w/g, (c) => c.toUpperCase());
 
   if (normalized === "critical" || normalized === "rejected") {
     colorScheme = "red";
@@ -23,6 +27,13 @@ const StatusBadge = ({ flag, ...props }) => {
   } else if (normalized === "good" || normalized === "approved") {
     colorScheme = "green";
     displayLabel = normalized === "good" ? "Good" : "Approved";
+  } else if (normalized === "unassessed") {
+    colorScheme = "gray";
+    displayLabel = "Not Assessed";
+  } else if (normalized === "enhancement") {
+    colorScheme = "blue";
+  } else if (normalized === "curriculum_update" || normalized === "new_course") {
+    colorScheme = "purple";
   } else if (normalized === "pending") {
     colorScheme = "blue";
     displayLabel = "Pending";
@@ -37,7 +48,8 @@ const StatusBadge = ({ flag, ...props }) => {
       borderRadius="full"
       fontSize="xs"
       fontWeight="600"
-      textTransform="capitalize"
+      textTransform="none"
+      whiteSpace="nowrap"
       {...props}
     >
       {displayLabel}

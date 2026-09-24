@@ -32,6 +32,11 @@ const jobSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    sector: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     // Array of skill name strings e.g. ["React", "Node.js"]
     skills: {
       type: [String],

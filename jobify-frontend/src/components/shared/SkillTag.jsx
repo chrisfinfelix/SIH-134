@@ -24,7 +24,7 @@ const SkillTag = ({
       m={0.5}
       {...props}
     >
-      <TagLabel>{skill}</TagLabel>
+      <TagLabel title={skill}>{skill}</TagLabel>
       {removable && onRemove && (
         <TagCloseButton
           onClick={(e) => {

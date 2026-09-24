@@ -34,13 +34,10 @@ import {
   CheckCircleIcon,
   StarIcon,
   WarningIcon,
-  InfoOutlineIcon,
 } from "@chakra-ui/icons";
 import PageShell from "../../components/layout/PageShell";
 import SkillTag from "../../components/shared/SkillTag";
-import StatCard from "../../components/shared/StatCard";
 import LoadingSpinner from "../../components/shared/LoadingSpinner";
-import EmptyState from "../../components/shared/EmptyState";
 import { useAuth } from "../../context/AuthContext";
 import useSkillGap from "../../hooks/useSkillGap";
 import api from "../../api/axios";
@@ -162,7 +159,7 @@ const SkillGap = () => {
     <PageShell
       role="trainee"
       title="Trainee Skill Gap Analysis"
-      subtitle="Benchmark your competencies against the top 20 national market skills and discover targeted gap-filling courses"
+      subtitle="Benchmark your competencies against the most in-demand national market skills and discover targeted gap-filling courses"
       breadcrumbItems={[{ label: "Skill Gap Analysis" }]}
     >
       {/* Step 1: Input Skills Card */}
@@ -295,7 +292,7 @@ const SkillGap = () => {
               Step 2 — National Skill Gap Comparative Breakdown
             </Heading>
             <Text fontSize="xs" color="text.muted">
-              Comparison between your profile and top 20 trending job skills across India
+              Comparison between your profile and the most in-demand job skills across India (up to 20)
             </Text>
           </Box>
 
@@ -380,7 +377,7 @@ const SkillGap = () => {
                   </Heading>
                 </HStack>
                 <Badge colorScheme="blue" fontSize="xs">
-                  Top {trendingSkills.length || 20}
+                  Top {trendingSkills.length}
                 </Badge>
               </Flex>
               <Text fontSize="2xs" color="text.muted" mb={3}>

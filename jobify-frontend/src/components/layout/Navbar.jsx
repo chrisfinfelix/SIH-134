@@ -10,15 +10,35 @@ import {
   MenuList,
   MenuItem,
   MenuDivider,
-  useDisclosure,
   Text,
   Badge,
   Avatar,
-  Container,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon, ChevronDownIcon, LockIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+
+const QUICK_LINKS = {
+  trainee: [
+    ["Career Pathways", "/trainee/pathways"],
+    ["Browse Courses", "/trainee/courses"],
+    ["Job Finder", "/trainee/jobs"],
+  ],
+  employer: [
+    ["Validate Courses", "/employer/validate"],
+    ["Post Jobs", "/employer/post-jobs"],
+    ["AI Insights", "/insights"],
+  ],
+  institute: [
+    ["Course Catalog", "/institute?tab=courses"],
+    ["AI Insights", "/insights"],
+  ],
+  admin: [
+    ["Recommendations", "/admin/recommendations"],
+    ["Jobs Manager", "/admin/jobs"],
+    ["AI Insights", "/insights"],
+  ],
+};
 
 const Navbar = ({ onOpenSidebar, isDashboard = false }) => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -100,7 +120,7 @@ const Navbar = ({ onOpenSidebar, isDashboard = false }) => {
 
           {/* Nav Links */}
           <HStack spacing={4} alignItems="center">
-            <HStack as="nav" spacing={4} display={{ base: "none", md: "flex" }}>
+            <HStack as="nav" spacing={2} display={{ base: "none", lg: "flex" }}>
               <Button
                 as={RouterLink}
                 to="/"
@@ -111,40 +131,21 @@ const Navbar = ({ onOpenSidebar, isDashboard = false }) => {
               >
                 Home
               </Button>
-              {isAuthenticated && user && (user.role === "trainee" || user.role === "admin") && (
-                <>
+              {isAuthenticated &&
+                user &&
+                (QUICK_LINKS[user.role] || []).map(([label, to]) => (
                   <Button
+                    key={to}
                     as={RouterLink}
-                    to="/trainee/pathways"
+                    to={to}
                     variant="ghost"
                     color="white"
                     size="sm"
                     _hover={{ bg: "rgba(255,255,255,0.1)" }}
                   >
-                    Career Pathways
+                    {label}
                   </Button>
-                  <Button
-                    as={RouterLink}
-                    to="/trainee/courses"
-                    variant="ghost"
-                    color="white"
-                    size="sm"
-                    _hover={{ bg: "rgba(255,255,255,0.1)" }}
-                  >
-                    Browse Courses
-                  </Button>
-                  <Button
-                    as={RouterLink}
-                    to="/trainee/jobs"
-                    variant="ghost"
-                    color="white"
-                    size="sm"
-                    _hover={{ bg: "rgba(255,255,255,0.1)" }}
-                  >
-                    Job Finder
-                  </Button>
-                </>
-              )}
+                ))}
             </HStack>
 
             {/* Auth Actions */}
@@ -168,9 +169,12 @@ const Navbar = ({ onOpenSidebar, isDashboard = false }) => {
                       color="white"
                       fontWeight="bold"
                     />
-                    <Text display={{ base: "none", md: "inline" }} fontSize="sm" fontWeight="600">
-                      {user.name}
-                    </Text>
+                    {/* noOfLines sets display:-webkit-box, so the responsive hide lives on a wrapper */}
+                    <Box display={{ base: "none", md: "block" }} maxW={{ md: "140px", xl: "220px" }}>
+                      <Text fontSize="sm" fontWeight="600" noOfLines={1} title={user.name}>
+                        {user.name}
+                      </Text>
+                    </Box>
                   </HStack>
                 </MenuButton>
                 <MenuList color="text.primary" fontSize="sm" shadow="lg" borderColor="#E2E8F0">

@@ -5,7 +5,8 @@ const User = require("../models/User");
 const Institute = require("../models/Institute");
 const PlacementOutcome = require("../models/PlacementOutcome");
 
-const escapeRegex = (str = "") => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const { escapeRegex } = require("../utils/escapeRegex");
+const { getRoleSkillsFromML } = require("../services/aiService");
 
 // Estimates a trainee's placement chance by finding courses whose skills most
 // overlap with their profile, then weight-averaging those courses' recorded
@@ -110,9 +111,14 @@ const getPathways = async (req, res, next) => {
       .slice(0, 10)
       .map(([skill]) => skill);
 
+    let requiredSkillsSource = "job_postings";
+    let mappedOccupation = null;
     if (requiredSkills.length === 0) {
-      // Fallback default skills if no jobs tagged
-      requiredSkills = ["JavaScript", "React", "Node.js", "MongoDB", "Git", "HTML/CSS", "Cloud"];
+      // No local postings for this role: ask the ML occupation classifier + skill graph
+      const mlResult = await getRoleSkillsFromML(targetRole);
+      requiredSkills = mlResult.skills;
+      mappedOccupation = mlResult.occupation;
+      requiredSkillsSource = requiredSkills.length > 0 ? "ml_occupation_taxonomy" : "none";
     }
 
     // 2. Identify Already Learned vs Skills to Develop
@@ -194,14 +200,16 @@ const getPathways = async (req, res, next) => {
       return {
         courseId: course._id,
         courseName: course.courseName,
-        provider: course.provider || "National Skill Center",
-        state: course.state || pState || "Kerala",
-        district: course.district || "Regional Center",
+        provider: course.provider || "",
+        state: course.state || "",
+        district: course.district || "",
         deliveryMode: course.deliveryMode || "Offline",
-        durationWeeks: course.durationWeeks || 8,
+        durationWeeks: course.durationWeeks ?? null,
         matchPercentage: courseMatchPercent,
         gapSkillsCovered: matchedWithMissing,
         allMatchedSkills: matchedWithRequired,
+        matchedSkills: matchedWithRequired,
+        missingSkills: requiredSkills.filter((s) => !courseSkillsLower.includes(s.toLowerCase())),
         coverCount: matchedWithMissing.length,
       };
     });
@@ -227,6 +235,9 @@ const getPathways = async (req, res, next) => {
         skillsToDevelop,
         regionalTrendingSkills,
         totalJobsFound: matchingJobs.length,
+        requiredSkills,
+        requiredSkillsSource,
+        mappedOccupation,
         recommendedCourses: sortedCourses,
       },
     });
@@ -368,7 +379,7 @@ const getSkillGap = async (req, res, next) => {
           courseId: course._id,
           courseName: course.courseName,
           provider: course.provider,
-          state: course.state || "Kerala",
+          state: course.state || "",
           district: course.district,
           deliveryMode: course.deliveryMode || "Offline",
           durationWeeks: course.durationWeeks,

@@ -179,49 +179,84 @@ async function run() {
   }
   console.log(`✅ Updated ${jobs.length} jobs with states and districts.`);
 
-  // 4. Create sample demand signals if empty
+  // 4. Demo employer + trainee accounts so every portal can be demoed after a fresh seed
+  const demoAccounts = [
+    {
+      name: "TechCorp India Hiring Team",
+      email: "employer@techcorp.in",
+      password: "Employer@123",
+      role: "employer",
+      organization: "TechCorp India Pvt Ltd",
+    },
+    {
+      name: "Demo Trainee",
+      email: "trainee@domain.in",
+      password: "Trainee@123",
+      role: "trainee",
+      primaryState: "Kerala",
+      skills: ["HTML", "CSS", "JavaScript", "Python"],
+      targetRole: "Full Stack Developer",
+    },
+  ];
+
+  const accountsByRole = {};
+  for (const { password, ...account } of demoAccounts) {
+    let user = await User.findOne({ email: account.email });
+    if (!user) {
+      user = await User.create({ ...account, passwordHash: await bcrypt.hash(password, salt) });
+      console.log(`✅ Created ${account.role} account: ${account.email} / ${password}`);
+    }
+    accountsByRole[account.role] = user;
+  }
+
+  // 5. Create sample demand signals if empty
   const demandSignalCount = await EmployerDemandSignal.countDocuments();
   if (demandSignalCount === 0) {
+    const employerId = accountsByRole.employer._id;
     await EmployerDemandSignal.insertMany([
       {
-        employerName: "Tata Consultancy Services",
-        industry: "IT & Software",
+        employerId,
+        company: "Tata Consultancy Services",
+        sector: "IT & Software",
         state: "Kerala",
         district: "Ernakulam",
-        requiredSkills: ["React", "Node.js", "MongoDB", "Docker"],
-        hiringVolume: 120,
-        timeline: "1-3 months",
-        comments: "Immediate hiring for cloud & full-stack development teams in Kochi Infopark.",
+        skills: ["React", "Node.js", "MongoDB", "Docker"],
+        targetRoles: ["Full Stack Developer"],
+        hiringCount: 120,
+        notes: "Immediate hiring for cloud & full-stack development teams in Kochi Infopark (1-3 months).",
       },
       {
-        employerName: "Infosys Ltd",
-        industry: "IT & Services",
+        employerId,
+        company: "Infosys Ltd",
+        sector: "IT & Services",
         state: "Karnataka",
         district: "Bengaluru Urban",
-        requiredSkills: ["Python", "FastAPI", "Machine Learning", "AWS"],
-        hiringVolume: 250,
-        timeline: "Immediate",
-        comments: "High demand for Generative AI and ML engineers.",
+        skills: ["Python", "FastAPI", "Machine Learning", "AWS"],
+        targetRoles: ["ML Engineer", "Data Scientist"],
+        hiringCount: 250,
+        notes: "High demand for Generative AI and ML engineers (immediate).",
       },
       {
-        employerName: "L&T Technology Services",
-        industry: "Engineering & Tech",
+        employerId,
+        company: "L&T Technology Services",
+        sector: "Engineering & Tech",
         state: "Tamil Nadu",
         district: "Chennai",
-        requiredSkills: ["Embedded Systems", "C++", "IoT", "Python"],
-        hiringVolume: 80,
-        timeline: "3-6 months",
-        comments: "Smart mobility & industrial IoT requirements.",
+        skills: ["Embedded Systems", "C++", "IoT", "Python"],
+        targetRoles: ["Embedded Engineer"],
+        hiringCount: 80,
+        notes: "Smart mobility & industrial IoT requirements (3-6 months).",
       },
       {
-        employerName: "Tech Mahindra",
-        industry: "Telecommunications & IT",
+        employerId,
+        company: "Tech Mahindra",
+        sector: "Telecommunications & IT",
         state: "Maharashtra",
         district: "Pune",
-        requiredSkills: ["Java", "Spring Boot", "Kubernetes", "DevOps"],
-        hiringVolume: 160,
-        timeline: "1-3 months",
-        comments: "Telecom microservices modernization team.",
+        skills: ["Java", "Spring Boot", "Kubernetes", "DevOps"],
+        targetRoles: ["DevOps Engineer", "Backend Developer"],
+        hiringCount: 160,
+        notes: "Telecom microservices modernization team (1-3 months).",
       },
     ]);
     console.log("✅ Created 4 sample Employer Demand Signals.");

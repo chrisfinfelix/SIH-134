@@ -6,7 +6,6 @@ import {
   SimpleGrid,
   Flex,
   HStack,
-  VStack,
   Badge,
   Button,
   Icon,
@@ -20,7 +19,6 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Divider,
 } from "@chakra-ui/react";
 import {
   SearchIcon,
@@ -30,7 +28,6 @@ import {
   TimeIcon,
   RepeatIcon,
   ArrowForwardIcon,
-  ViewIcon,
 } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -51,6 +48,8 @@ const KNOWN_STATES = [
   "Telangana",
   "Gujarat",
 ];
+
+const pluralize = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 const AdminDashboard = () => {
   const [selectedState, setSelectedState] = useState("All");
@@ -238,7 +237,7 @@ const AdminDashboard = () => {
       )}
 
       {/* 6 Key Stat Cards Grid (Reactive to selected state) */}
-      <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 6 }} spacing={3} mb={8}>
+      <SimpleGrid columns={{ base: 2, md: 3, "2xl": 6 }} spacing={3} mb={8}>
         <StatCard
           label={selectedState === "All" ? "Total Jobs" : `${selectedState} Jobs`}
           value={stats.totalJobs || 0}
@@ -294,8 +293,8 @@ const AdminDashboard = () => {
             </Badge>
           </Flex>
         </CardHeader>
-        <CardBody pt={2}>
-          <Table variant="simple" size="sm">
+        <CardBody pt={2} overflowX="auto">
+          <Table variant="simple" size="sm" minW="640px">
             <Thead>
               <Tr>
                 <Th>State / Territory</Th>
@@ -326,17 +325,17 @@ const AdminDashboard = () => {
                     </Td>
                     <Td>
                       <Badge colorScheme="blue" variant="solid" fontSize="xs">
-                        {st.jobCount} Jobs
+                        {pluralize(st.jobCount, "Job")}
                       </Badge>
                     </Td>
                     <Td>
                       <Badge colorScheme="green" variant="subtle" fontSize="xs">
-                        {st.courseCount} Courses
+                        {pluralize(st.courseCount, "Course")}
                       </Badge>
                     </Td>
                     <Td>
                       <Badge colorScheme="purple" variant="outline" fontSize="xs">
-                        {st.instituteCount} Institutes
+                        {pluralize(st.instituteCount, "Institute")}
                       </Badge>
                     </Td>
                     <Td>
@@ -358,9 +357,9 @@ const AdminDashboard = () => {
       </Card>
 
       {/* Analytics Charts & Tables Grid (State / National Reactive) */}
-      <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6} mb={8}>
+      <SimpleGrid columns={{ base: 1, "2xl": 2 }} spacing={6} mb={8}>
         {/* Horizontal Skill Demand Bar Chart */}
-        <Box>
+        <Box minW={0}>
           {isSkillLoading ? (
             <LoadingSpinner message="Calculating skill demand percentages..." />
           ) : (
@@ -369,7 +368,7 @@ const AdminDashboard = () => {
         </Box>
 
         {/* District Employment & Course Balance Table */}
-        <Box>
+        <Box minW={0}>
           {isDistrictLoading ? (
             <LoadingSpinner message="Aggregating district workforce indices..." />
           ) : (

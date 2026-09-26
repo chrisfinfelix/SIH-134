@@ -24,10 +24,26 @@ import Navbar from "../../components/layout/Navbar";
 import { useAuth } from "../../context/AuthContext";
 
 const DEMO_ACCOUNTS = [
-  ["Admin", "admin@jobify.gov.in"],
-  ["Employer", "employer@techcorp.in"],
-  ["Trainee", "trainee@domain.in"],
-  ["Institute", "institute@kitas.kerala.gov.in"],
+  {
+    label: "Admin",
+    email: "admin@jobify.gov.in",
+    password: import.meta.env.VITE_DEMO_ADMIN_PASSWORD || import.meta.env.VITE_DEMO_PASSWORD || "Admin@123",
+  },
+  {
+    label: "Employer",
+    email: "employer@techcorp.in",
+    password: import.meta.env.VITE_DEMO_EMPLOYER_PASSWORD || import.meta.env.VITE_DEMO_PASSWORD || "Employer@123",
+  },
+  {
+    label: "Trainee",
+    email: "trainee@domain.in",
+    password: import.meta.env.VITE_DEMO_TRAINEE_PASSWORD || import.meta.env.VITE_DEMO_PASSWORD || "Trainee@123",
+  },
+  {
+    label: "Institute",
+    email: "institute@kitas.kerala.gov.in",
+    password: import.meta.env.VITE_DEMO_INSTITUTE_PASSWORD || import.meta.env.VITE_DEMO_PASSWORD || "Institute@123",
+  },
 ];
 
 const Login = () => {
@@ -203,16 +219,17 @@ const Login = () => {
 
           <Box mt={6} p={3} bg="#F8FAFC" borderRadius="md" border="1px solid #E2E8F0" fontSize="xs" color="text.muted">
             <Text fontWeight="700" color="brand.500" mb={1.5} fontSize="2xs" letterSpacing="wide">
-              DEMO ACCOUNTS — CLICK TO FILL EMAIL
+              DEMO ACCOUNTS — CLICK TO FILL CREDENTIALS
             </Text>
             <VStack align="stretch" spacing={0.5}>
-              {DEMO_ACCOUNTS.map(([label, demoEmail]) => (
+              {DEMO_ACCOUNTS.map((account) => (
                 <HStack
-                  key={demoEmail}
+                  key={account.email}
                   as="button"
                   type="button"
                   onClick={() => {
-                    setEmail(demoEmail);
+                    setEmail(account.email);
+                    setPassword(account.password);
                     setErrors({});
                   }}
                   justify="space-between"
@@ -222,8 +239,8 @@ const Login = () => {
                   _hover={{ bg: "brand.50", color: "brand.600" }}
                   textAlign="left"
                 >
-                  <Text fontWeight="600" minW="64px">{label}</Text>
-                  <Text noOfLines={1}>{demoEmail}</Text>
+                  <Text fontWeight="600" minW="64px">{account.label}</Text>
+                  <Text noOfLines={1}>{account.email}</Text>
                 </HStack>
               ))}
             </VStack>
